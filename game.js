@@ -22,13 +22,10 @@ function clone(obj) {
     throw new Error("Unable to copy obj! Its type isn't supported.");
 }
 
-
-
-
-
 var game;
 var MAP_WIDTH = 21;
 var MAP_HEIGHT = 11;
+textures = [];
 
 function Point(x, y) {
 	this.x = x;
@@ -45,10 +42,7 @@ function Point(x, y) {
 function Game() {
 	this.map;
 	this.center;
-}
-
-function moveRight() {
-
+	this.currentContext;
 }
 
 function isoTo2D(point) {
@@ -65,8 +59,18 @@ function twoDToIso(point) {
 	return(tempPt);
 }
 
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+
 function loadTextures(next) {
-	var textures = [];
+	textures = [];
 	var numLoaded = 0;
 	function imageLoaded() { //this looks hacky because the calls are asynchronus. not my fault-ish -jack
 		if (numLoaded >= 1) {
@@ -103,20 +107,23 @@ function generateMap() {
 	return map;
 }
 
-function draw(textures) {
-    var ctx = $("#canvas")[0].getContext('2d');
-    ctx.canvas.width  = window.innerWidth;
-    ctx.canvas.height = window.innerHeight;
-    var squareSideLength = ctx.canvas.width / 20;
+function animate() {
+    requestAnimFrame( animate );
+    draw();
+}
+
+
+function draw() {
+
+    var squareSideLength = game.currentContext.canvas.width / 20;
 
     centerInTiles = clone(game.center);
     centerInTiles.x = Math.floor(centerInTiles.x / squareSideLength);
     centerInTiles.y = Math.floor(centerInTiles.y / squareSideLength);
-    console.log(centerInTiles);
 
 	for (i=0 - centerInTiles.x - 1; i<MAP_WIDTH - centerInTiles.x - 1; i++) {
 		for (j=-MAP_HEIGHT - (centerInTiles.y + 1); j<MAP_HEIGHT - (centerInTiles.y + 1); j++) {
-	    	ctx.beginPath();
+	    	game.currentContext.beginPath();
 	    	rectPoint = new Point((i * squareSideLength) + game.center.x, (j * squareSideLength) + game.center.y);
 	    	points = new Array(4);
 	    	points[0] = new Point(rectPoint.x, rectPoint.y);
@@ -127,24 +134,24 @@ function draw(textures) {
 	    		points[k] = twoDToIso(points[k]);
 	    	}
 
-			ctx.moveTo(points[0].x, points[0].y); //constants chosen experimentally
-			ctx.lineTo(points[1].x, points[1].y);
-			ctx.lineTo(points[2].x, points[2].y);
-			ctx.lineTo(points[3].x, points[3].y);
+			game.currentContext.moveTo(points[0].x, points[0].y); //constants chosen experimentally
+			game.currentContext.lineTo(points[1].x, points[1].y);
+			game.currentContext.lineTo(points[2].x, points[2].y);
+			game.currentContext.lineTo(points[3].x, points[3].y);
 	    	
 
 
 			//drawing code
-	    	var grassPattern = ctx.createPattern(textures[0], 'repeat');
-    		var gravelPattern = ctx.createPattern(textures[1], 'repeat');
+	    	var grassPattern = game.currentContext.createPattern(textures[0], 'repeat');
+    		var gravelPattern = game.currentContext.createPattern(textures[1], 'repeat');
 	    	if (game.map[i][j] == 0) 
-	    		ctx.fillStyle = grassPattern;
+	    		game.currentContext.fillStyle = grassPattern;
 	    	else
-	    		ctx.fillStyle = gravelPattern;
-	    	ctx.lineWidth = 1.5;
-	    	ctx.strokeStyle = 'black';
-	    	ctx.fill();
-	    	ctx.stroke();
+	    		game.currentContext.fillStyle = gravelPattern;
+	    	game.currentContext.lineWidth = 1.5;
+	    	game.currentContext.strokeStyle = 'black';
+	    	game.currentContext.fill();
+	    	game.currentContext.stroke();
     	}
     } 
 
@@ -176,10 +183,16 @@ $(function() { //jquery loaded
 	game = new Game();
 	game.center = new Point(0, 0);
 	game.map = generateMap();
+	var ctx = $("#canvas")[0].getContext('2d');
+	var ctx2 = $("#canvas2")[0].getContext('2d');
+	game.currentContext = ctx;
+	game.otherContext = ctx2;
+	game.currentContext.canvas.width  = window.innerWidth;
+    game.currentContext.canvas.height = window.innerHeight;
+    game.otherContext.canvas.width  = window.innerWidth;
+    game.otherContext.canvas.height = window.innerHeight;
 	loadTextures(function(textures) { //load textures, then:
-		setInterval(function() {
-			draw(textures);
-		}, 2);
+		animate()
 	});
 
 	$(document).keydown(function(e){
@@ -188,28 +201,21 @@ $(function() { //jquery loaded
     	ctx.canvas.height = window.innerHeight;
     	var squareSideLength = ctx.canvas.width / 20;
     	if (e.keyCode == 37) { 
-    		game.center = game.center.addPoints(isoTo2D(new Point(-5, 0)));
+    		game.center = game.center.addPoints(isoTo2D(new Point(-10, 0)));
     		return false;
     	}
     	if (e.keyCode == 38) {
-    		game.center = game.center.addPoints(isoTo2D(new Point(0, -5)));
+    		game.center = game.center.addPoints(isoTo2D(new Point(0, -10)));
     		return false;
     	}
     	if (e.keyCode == 39) {
-    		game.center = game.center.addPoints(isoTo2D(new Point(5, 0)));
+    		game.center = game.center.addPoints(isoTo2D(new Point(10, 0)));
     		return false;
     	}
     	if (e.keyCode == 40) {	
-    		game.center = game.center.addPoints(isoTo2D(new Point(0, 5)));
+    		game.center = game.center.addPoints(isoTo2D(new Point(0, 10)));
     		return false;
     	}
 	});
-
-
-
-
-
-
-
 
 });
