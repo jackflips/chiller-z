@@ -3,6 +3,9 @@ var game;
 var sprites = [];
 var debugCounter = 0;
 
+var lastCalledTime;
+var fps;
+
 var MOVEMENT_RATE = 10;
 
 function Point(x, y) {
@@ -10,7 +13,7 @@ function Point(x, y) {
 	this.y = y;
 
 	this.addPoint = function(point) {
-		newPoint = new Point();
+		newPoint = new Point(0, 0);
 		newPoint.x = this.x + point.x;
 		newPoint.y = this.y + point.y;
 		return newPoint;
@@ -26,7 +29,8 @@ function Game() {
 	this.center;
 	this.canvas;
 	this.context;
-	this.currentMove;
+	this.currentTarget;
+	this.targetOffset;
 }
 
 function isoTo2D(point) {
@@ -41,6 +45,13 @@ function twoDToIso(point) {
 	tempPt.x = point.x - point.y;
 	tempPt.y = (point.x + point.y) / 2;
 	return(tempPt);
+}
+
+function euclidianDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
+	if (point2)
+		return (Math.sqrt(Math.pow(point2.x - point1.x, 2), Math.pow(point2.y - point1.y, 2)));
+	else
+		return Math.sqrt(Math.pow(point1.x, 2), Math.pow(point1.y, 2));
 }
 
 window.requestAnimFrame = (function(){
@@ -86,8 +97,8 @@ function Sprite(tileType, pos, size) {
 }
 
 Sprite.prototype.staticRender = function(ctx) {
-    var x = this.pos[0];
-    var y = this.pos[1];
+    var x = Math.round(this.pos[0]);
+    var y = Math.round(this.pos[1]);
 
     ctx.drawImage(resources.get(this.tileType),
                   0, 0,
@@ -99,6 +110,27 @@ Sprite.prototype.staticRender = function(ctx) {
 
 function draw() {
 
+	//update position
+	sprites.length = 0;
+
+	if (game.currentTarget) {
+		if (euclidianDistance(game.currentTarget, game.center) < 5) {
+			game.currentTarget = null;
+		} else {
+			/*
+			var offsetDistance = euclidianDistance(game.targetOffset);
+			var triangleRatio = MOVEMENT_RATE / offsetDistance;
+			var newX = game.targetOffset.x * triangleRatio;
+			var newY = game.targetOffset.y * triangleRatio;
+			*/
+
+			var newX = MOVEMENT_RATE * (game.targetOffset.x / (Math.abs(game.targetOffset.x) + Math.abs(game.targetOffset.y)));
+			var newY = MOVEMENT_RATE * (game.targetOffset.y / (Math.abs(game.targetOffset.x) + Math.abs(game.targetOffset.y)));
+
+			game.center.x += newX;
+			game.center.y += newY;
+		}
+	}	
 	var firstRowToDraw = Math.floor(game.center.x / 96);
 	var firstColToDraw = Math.floor(game.center.y / 96);
 
@@ -139,10 +171,11 @@ function bindKeys() {
 	$('#canvas').mousedown(function(e) {
 		e.preventDefault();
 		if (e.which == 3) {
+			game.currentTarget = null;
 			var offset = $(this).offset();
     		var mouseOffset = new Point(e.clientX - offset.left, e.clientY - offset.top);
-    		var gamespaceOffset = mouseOffset.subtractPoint(new Point(canvas.width/2, canvas.height/2));
-
+    		game.targetOffset = mouseOffset.subtractPoint(new Point(canvas.width/2, canvas.height/2));
+    		game.currentTarget = game.center.addPoint(game.targetOffset);
 		}
 	});
 }
@@ -152,8 +185,8 @@ $(function() { //jquery loaded
 	game.center = new Point(0, 0);
 	game.map = generateMap();
 	game.canvas = $("#canvas")[0];
-	game.canvas.width  = 500;
-    game.canvas.height = 500;
+	game.canvas.width  = window.innerWidth;
+    game.canvas.height = window.innerHeight;
 	game.context = game.canvas.getContext('2d');
     game.screenTileWidth = Math.floor(window.innerWidth / 96) + 1;
     game.screenTileHeight = Math.floor(window.innerHeight / 96) + 1;
