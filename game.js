@@ -30,7 +30,7 @@ function Game() {
 	this.canvas;
 	this.context;
 	this.currentTarget;
-	this.targetOffset;
+	this.targetOffset = new Point(0, -1);
 }
 
 function isoTo2D(point) {
@@ -83,54 +83,64 @@ function animate() {
     draw();
 }
 
-function Sprite(tileType, pos, size) {
+function Sprite(image, pos, size, rotation) {
 	if (debugCounter % 100 == 0) {
 	}
-	if (tileType == 0) {
-		this.tileType = "grass.png";
+	if (image == 0) {
+		this.image = "grass.png";
+	}
+	else if (image == 1) {
+		this.image = "dirt.png";
 	}
 	else {
-		this.tileType = "dirt.png";
+		this.image = image;
 	}
     this.pos = pos;
     this.size = size;
+    this.rotation = rotation;
 }
 
 Sprite.prototype.staticRender = function(ctx) {
-    var x = Math.round(this.pos[0]);
+    if (this.rotation) {
+    	game.context.save();
+    	game.context.translate(Math.round(this.pos[0] + this.size[0]/2), Math.round(this.pos[1] + this.size[1]/2)); 
+		game.context.rotate(this.rotation); 
+		this.pos[0] = -this.size[0]/2;
+		this.pos[1] = -this.size[1]/2;
+		this._staticRender(ctx);
+		game.context.restore();
+    } else {
+	    this._staticRender(ctx);
+	}
+}
+
+Sprite.prototype._staticRender = function(ctx) {
+	var x = Math.round(this.pos[0]);
     var y = Math.round(this.pos[1]);
 
-    ctx.drawImage(resources.get(this.tileType),
+    ctx.drawImage(resources.get(this.image),
                   0, 0,
                   this.size[0], this.size[1],
                   x, y,
                   this.size[0], this.size[1]);
 }
 
-
 function draw() {
 
 	//update position
-	sprites.length = 0;
-
 	if (game.currentTarget) {
 		if (euclidianDistance(game.currentTarget, game.center) < 5) {
 			game.currentTarget = null;
 		} else {
-			/*
-			var offsetDistance = euclidianDistance(game.targetOffset);
-			var triangleRatio = MOVEMENT_RATE / offsetDistance;
-			var newX = game.targetOffset.x * triangleRatio;
-			var newY = game.targetOffset.y * triangleRatio;
-			*/
-
-			var newX = MOVEMENT_RATE * (game.targetOffset.x / (Math.abs(game.targetOffset.x) + Math.abs(game.targetOffset.y)));
-			var newY = MOVEMENT_RATE * (game.targetOffset.y / (Math.abs(game.targetOffset.x) + Math.abs(game.targetOffset.y)));
-
-			game.center.x += newX;
-			game.center.y += newY;
+			game.center.x += MOVEMENT_RATE * (game.targetOffset.x / (Math.abs(game.targetOffset.x) + Math.abs(game.targetOffset.y)));
+			game.center.y += MOVEMENT_RATE * (game.targetOffset.y / (Math.abs(game.targetOffset.x) + Math.abs(game.targetOffset.y)));
 		}
 	}	
+
+	//now draw
+
+	//draw world
+	sprites.length = 0;
 	var firstRowToDraw = Math.floor(game.center.x / 96);
 	var firstColToDraw = Math.floor(game.center.y / 96);
 
@@ -139,6 +149,10 @@ function draw() {
 			sprites.push(new Sprite(game.map[i][j], [i*96 - game.center.x, j*96 - game.center.y], [96, 96]));
 		}
 	}
+
+	//draw characters
+	var carDirection = Math.atan2(game.targetOffset.y, game.targetOffset.x);
+	sprites.push(new Sprite("car.png", [game.canvas.width/2 - 39, game.canvas.height/2 - 75], [78, 150], carDirection + 1.57079633));
 
 	for (sprite in sprites) {
 		sprites[sprite].staticRender(game.context);
@@ -176,6 +190,7 @@ function bindKeys() {
     		var mouseOffset = new Point(e.clientX - offset.left, e.clientY - offset.top);
     		game.targetOffset = mouseOffset.subtractPoint(new Point(canvas.width/2, canvas.height/2));
     		game.currentTarget = game.center.addPoint(game.targetOffset);
+    		console.log(Math.tan(game.targetOffset.y / game.targetOffset.x) * 180/Math.PI);
 		}
 	});
 }
@@ -185,8 +200,8 @@ $(function() { //jquery loaded
 	game.center = new Point(0, 0);
 	game.map = generateMap();
 	game.canvas = $("#canvas")[0];
-	game.canvas.width  = window.innerWidth;
-    game.canvas.height = window.innerHeight;
+	game.canvas.width  = 800;
+    game.canvas.height = 600;
 	game.context = game.canvas.getContext('2d');
     game.screenTileWidth = Math.floor(window.innerWidth / 96) + 1;
     game.screenTileHeight = Math.floor(window.innerHeight / 96) + 1;
