@@ -216,21 +216,6 @@ function draw() {
 }
 
 function bindKeys() {
-	$(document).keydown(function(e){
-		e.preventDefault();
-    	if (e.keyCode == 37) { 
-    		game.center.x = game.center.x - MOVEMENT_RATE;
-    	}
-    	if (e.keyCode == 38) {
-    		game.center.y = game.center.y - MOVEMENT_RATE;
-    	}
-    	if (e.keyCode == 39) {
-    		game.center.x = game.center.x + MOVEMENT_RATE;
-    	}
-    	if (e.keyCode == 40) {	
-    		game.center.y = game.center.y + MOVEMENT_RATE;
-    	}
-	});
 
 	$('#canvas').on('contextmenu',function() {
 		return false; //disables the right click menu on the canvas
