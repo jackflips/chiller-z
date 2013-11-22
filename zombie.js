@@ -1,11 +1,11 @@
-function Zombie(position, direction) {
+function Zombie(position, velocity) {
 	this.hunger = 0;
 	this.target;
-	this.speed = 2;
+	this.maxSpeed = 2;
 	this.position = position;
-	this.direction = direction;
+	this.velocity = velocity;
 }
 
 Zombie.prototype.update = function(game) {
-	//do stuff
+	this.velocity = steering.seek(this, game.player);
 };

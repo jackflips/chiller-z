@@ -9,19 +9,7 @@ var fps;
 var MOVEMENT_RATE = 5;
 
 function Point(x, y) {
-	this.x = x;
-	this.y = y;
-
-	this.addPoint = function(point) {
-		newPoint = new Point(0, 0);
-		newPoint.x = this.x + point.x;
-		newPoint.y = this.y + point.y;
-		return newPoint;
-	}
-
-	this.subtractPoint = function(point) {
-		return this.addPoint(new Point(-point.x, -point.y));
-	}
+	return new Vector(x, y);
 }
 
 function Game() {
@@ -32,20 +20,12 @@ function Game() {
 	this.currentTarget;
 	this.targetOffset = new Point(0, -1);
 	this.zombies = [];
+	this.player;
 }
 
-function isoTo2D(point) {
-	var tempPt = new Point(0, 0);
-	tempPt.x = (2 * point.y + point.x) / 2;
-	tempPt.y = (2 * point.y - point.x) / 2;
-	return(tempPt);
-}
-
-function twoDToIso(point) {
-	var tempPt = new Point(0, 0);
-	tempPt.x = point.x - point.y;
-	tempPt.y = (point.x + point.y) / 2;
-	return(tempPt);
+function Player() {
+	this.health = 100;
+	this.position;
 }
 
 function euclidianDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
@@ -163,16 +143,9 @@ function draw() {
 	//update position of zombies per frame based on direction and speed. (write this now.)
 	for (zombie in game.zombies) {
 		var thisZombie = game.zombies[zombie];
-		var newX = Math.cos(thisZombie.direction) * thisZombie.speed;
-		var newY = Math.sin(thisZombie.direction) * thisZombie.speed;
-		thisZombie.position.x += newX;
-		thisZombie.position.y += newY;
-		thisZombie.direction += .01;
+		thisZombie.position.x += thisZombie.velocity.x;
+		thisZombie.position.y += thisZombie.velocity.y;
 	}
-
-
-	//steering behaviors and ai and stuff goes here	
-	//*********************************************
 
 	//now draw
 	//--------
@@ -198,7 +171,8 @@ function draw() {
 	for (zombie in game.zombies) {
 		if (clip(game.zombies[zombie].position, new Point(50, 50))) {
 			var zombiePos = new Point(game.zombies[zombie].position.x - game.center.x, game.zombies[zombie].position.y - game.center.y)
-			sprites.push(new Sprite("zombie1.png", [zombiePos.x, zombiePos.y], [50, 50], game.zombies[zombie].direction, true));
+			var zombieDir = Math.atan2(game.zombies[zombie].velocity.y, game.zombies[zombie].velocity.x);
+			sprites.push(new Sprite("zombie1.png", [zombiePos.x, zombiePos.y], [50, 50], zombieDir, true));
 		}
 	}
  
@@ -219,11 +193,12 @@ function bindKeys() {
 	$('#canvas').mousedown(function(e) {
 		e.preventDefault();
 		if (e.which == 3) {
+			console.log(game.player.position);
 			game.currentTarget = null;
 			var offset = $(this).offset();
     		var mouseOffset = new Point(e.clientX - offset.left, e.clientY - offset.top);
-    		game.targetOffset = mouseOffset.subtractPoint(new Point(canvas.width/2, canvas.height/2));
-    		game.currentTarget = game.center.addPoint(game.targetOffset);
+    		game.targetOffset = mouseOffset.subtract(new Point(canvas.width/2, canvas.height/2));
+    		game.currentTarget = game.center.add(game.targetOffset);
 		}
 	});
 }
@@ -236,9 +211,9 @@ $(function() { //jquery loaded
 	game.canvas.width  = 800;
     game.canvas.height = 600;
 	game.context = game.canvas.getContext('2d');
-    game.screenTileWidth = Math.floor(window.innerWidth / 96) + 1;
-    game.screenTileHeight = Math.floor(window.innerHeight / 96) + 1;
-    game.zombies.push(new Zombie(new Point(0, 0), Math.PI/4));
+	game.player = new Player();
+	game.player.position = game.center;
+    game.zombies.push(new Zombie(new Point(0, 0), new Vector(Math.sqrt(2), Math.sqrt(2))));
     resources.load([
     	'grass.png',
     	'dirt.png',
