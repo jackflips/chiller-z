@@ -21,10 +21,10 @@ condition.test = function() {
 };
 
 //Actions
-var action1 = function() {console.log("action1 running");};
+var action1 = function() {console.log("GRAAAHHH (action1 running)"); this.direction += 0.1;};
 var enter1 = function() {console.log("entering state 1");};
-var exit1 = function() {console.log"exiting action 1");};
-var action2 = function() {console.log("action2 running");};
+var exit1 = function() {console.log("exiting action 1");};
+var action2 = function() {console.log("guuhhhh (action2 running)"); this.direction -= 0.1;};
 var enter2 = function() {console.log("entering state 2");};
 var exit2 = function() {console.log("exiting action 2");};
 var transAction = function() {console.log("transition action running");};
@@ -61,5 +61,6 @@ var demoFSM = new FSM();
 demoFSM.setCurrentState(demoState);
 
 Zombie.prototype.update = function(game) {
-	
+	var actions = demoFSM.update();
+	for (var act in actions) {actions[act]();}
 };
