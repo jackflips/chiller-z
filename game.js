@@ -26,6 +26,8 @@ function Game() {
 function Player() {
 	this.health = 100;
 	this.position;
+	this.velocity = new Vector(0, 0);
+	this.size = new Point(78, 150);
 }
 
 function euclidianDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
@@ -127,11 +129,12 @@ function draw() {
 	//update position of viewport and necromancer
 	if (game.currentTarget) {
 		if (euclidianDistance(game.currentTarget, game.center) < 5) {
-			game.currentTarget = null;
+			game.player.velocity = new Vector(0, 0);
 		} else {
 			var triangleFactor = euclidianDistance(game.targetOffset) / MOVEMENT_RATE;
-			game.center.x += game.targetOffset.x / triangleFactor;
-			game.center.y += game.targetOffset.y / triangleFactor;
+			game.player.velocity = game.targetOffset.divide(triangleFactor);
+			game.center = game.center.add(game.player.velocity);
+			game.player.position = game.center;
 		}
 	}
 
@@ -193,7 +196,6 @@ function bindKeys() {
 	$('#canvas').mousedown(function(e) {
 		e.preventDefault();
 		if (e.which == 3) {
-			console.log(game.player.position);
 			game.currentTarget = null;
 			var offset = $(this).offset();
     		var mouseOffset = new Point(e.clientX - offset.left, e.clientY - offset.top);
@@ -213,12 +215,15 @@ $(function() { //jquery loaded
 	game.context = game.canvas.getContext('2d');
 	game.player = new Player();
 	game.player.position = game.center;
-    game.zombies.push(new Zombie(new Point(0, 0), new Vector(Math.sqrt(2), Math.sqrt(2))));
+	for (i=0; i<4; i++) {
+    	game.zombies.push(new Zombie(new Point(i*250, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
+	}
     resources.load([
     	'grass.png',
     	'dirt.png',
     	'car.png',
-    	'zombie1.png'
+    	'zombie1.png',
+    	'bluedot.png'
    	]);
     resources.onReady(animate);
     bindKeys();

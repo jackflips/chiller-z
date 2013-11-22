@@ -63,8 +63,13 @@ var demoFSM = new StateMachine();
 demoFSM.setCurrentState(demoState);
 
 Zombie.prototype.update = function(game) {
+	this.velocity = steering.seek(this, game.player);
+
+
+	/*
 	var actions = demoFSM.update();
 	for (var act in actions) {actions[act]();}
 	if (demoFSM.getCurrentState() == demoState) {this.direction+=0.1;}
 	else {this.direction-=0.1;}
+	*/
 };
