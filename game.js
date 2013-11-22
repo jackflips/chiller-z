@@ -6,7 +6,7 @@ var debugCounter = 0;
 var lastCalledTime;
 var fps;
 
-var MOVEMENT_RATE = 10;
+var MOVEMENT_RATE = 5;
 
 function Point(x, y) {
 	this.x = x;
@@ -31,6 +31,15 @@ function Game() {
 	this.context;
 	this.currentTarget;
 	this.targetOffset = new Point(0, -1);
+	this.zombies = [];
+}
+
+function Zombie(position, direction) {
+	this.hunger = 0;
+	this.target;
+	this.speed = 2;
+	this.position = position;
+	this.direction = direction;
 }
 
 function isoTo2D(point) {
@@ -52,6 +61,15 @@ function euclidianDistance(point1, point2) { //returns distance between 2 points
 		return (Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)));
 	else
 		return Math.sqrt(Math.pow(point1.x, 2) + Math.pow(point1.y, 2));
+}
+
+function clip(point, size) {
+	if (point.x > game.center.x - game.canvas.width/2 - size.x &&
+		point.x < game.center.x + game.canvas.width/2 &&
+		point.y > game.center.y - game.canvas.height/2 - size.y &&
+		point.y < game.center.y + game.canvas.height/2)
+		return true;
+	return false;
 }
 
 window.requestAnimFrame = (function(){
@@ -83,7 +101,7 @@ function animate() {
     draw();
 }
 
-function Sprite(image, pos, size, rotation) {
+function Sprite(image, pos, size, rotation, isCharacter) {
 	if (debugCounter % 100 == 0) {
 	}
 	if (image == 0) {
@@ -98,13 +116,18 @@ function Sprite(image, pos, size, rotation) {
     this.pos = pos;
     this.size = size;
     this.rotation = rotation;
+    this.isCharacter = isCharacter;
 }
 
 Sprite.prototype.staticRender = function(ctx) {
+	if (this.isCharacter) {
+		this.pos[0] += game.canvas.width/2;
+		this.pos[1] += game.canvas.height/2;
+	}
     if (this.rotation) {
     	game.context.save();
     	game.context.translate(Math.round(this.pos[0] + this.size[0]/2), Math.round(this.pos[1] + this.size[1]/2)); 
-		game.context.rotate(this.rotation); 
+		game.context.rotate(this.rotation + 1.57079633); 
 		this.pos[0] = -this.size[0]/2;
 		this.pos[1] = -this.size[1]/2;
 		this._staticRender(ctx);
@@ -127,26 +150,37 @@ Sprite.prototype._staticRender = function(ctx) {
 
 function draw() {
 
-	//update position
+	//update positions
+	//----------------
+	//update position of viewport and necromancer
 	if (game.currentTarget) {
 		if (euclidianDistance(game.currentTarget, game.center) < 5) {
 			game.currentTarget = null;
 		} else {
-
-			var hyp = euclidianDistance(game.targetOffset);
-			console.log(game.targetOffset, hyp);
-			var triangleFactor = hyp / MOVEMENT_RATE;
+			var triangleFactor = euclidianDistance(game.targetOffset) / MOVEMENT_RATE;
 			game.center.x += game.targetOffset.x / triangleFactor;
 			game.center.y += game.targetOffset.y / triangleFactor;
-
-			/*
-			game.center.x += MOVEMENT_RATE * (game.targetOffset.x / (Math.abs(game.targetOffset.x) + Math.abs(game.targetOffset.y)));
-			game.center.y += MOVEMENT_RATE * (game.targetOffset.y / (Math.abs(game.targetOffset.x) + Math.abs(game.targetOffset.y)));
-			*/
 		}
-	}	
+	}
+
+	//update positions of npcs
+
+	//update position of zombies per frame based on direction and speed. (write this now.)
+	for (zombie in game.zombies) {
+		var thisZombie = game.zombies[zombie];
+		var newX = Math.cos(thisZombie.direction) * thisZombie.speed;
+		var newY = Math.sin(thisZombie.direction) * thisZombie.speed;
+		thisZombie.position.x += newX;
+		thisZombie.position.y += newY;
+		thisZombie.direction += .01;
+	}
+
+
+	//steering behaviors and ai and stuff goes here	
+	//*********************************************
 
 	//now draw
+	//--------
 
 	//draw world
 	sprites.length = 0;
@@ -160,8 +194,19 @@ function draw() {
 	}
 
 	//draw characters
+	//---------------
+	//draw car
 	var carDirection = Math.atan2(game.targetOffset.y, game.targetOffset.x);
-	sprites.push(new Sprite("car.png", [game.canvas.width/2 - 39, game.canvas.height/2 - 75], [78, 150], carDirection + 1.57079633));
+	sprites.push(new Sprite("car.png", [game.canvas.width/2 - 39, game.canvas.height/2 - 75], [78, 150], carDirection));
+
+	//draw zombies
+	for (zombie in game.zombies) {
+		if (clip(game.zombies[zombie].position, new Point(50, 50))) {
+			var zombiePos = new Point(game.zombies[zombie].position.x - game.center.x, game.zombies[zombie].position.y - game.center.y)
+			sprites.push(new Sprite("zombie1.png", [zombiePos.x, zombiePos.y], [50, 50], game.zombies[zombie].direction, true));
+		}
+	}
+ 
 
 	for (sprite in sprites) {
 		sprites[sprite].staticRender(game.context);
@@ -213,10 +258,12 @@ $(function() { //jquery loaded
 	game.context = game.canvas.getContext('2d');
     game.screenTileWidth = Math.floor(window.innerWidth / 96) + 1;
     game.screenTileHeight = Math.floor(window.innerHeight / 96) + 1;
+    game.zombies.push(new Zombie(new Point(0, 0), Math.PI/4));
     resources.load([
     	'grass.png',
     	'dirt.png',
-    	'car.png'
+    	'car.png',
+    	'zombie1.png'
    	]);
     resources.onReady(animate);
     bindKeys();
