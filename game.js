@@ -157,7 +157,7 @@ function draw() {
 
 	//update positions of npcs
 	for (zombie in game.zombies) {
-		game.zombies[zombie].update();
+		game.zombies[zombie].update(game);
 	}
 
 	//update position of zombies per frame based on direction and speed. (write this now.)
