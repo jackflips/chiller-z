@@ -187,9 +187,11 @@ function draw() {
 	//draw zombies
 	for (zombie in game.zombies) {
 		if (clip(game.zombies[zombie].position, new Point(50, 50))) {
+			var prevPos = zombiePos;
 			var zombiePos = new Point(game.zombies[zombie].position.x - game.center.x, game.zombies[zombie].position.y - game.center.y)
 			var zombieDir = Math.atan2(game.zombies[zombie].velocity.y, game.zombies[zombie].velocity.x);
 			sprites.push(new Sprite("zombie1.png", [zombiePos.x, zombiePos.y], [50, 50], zombieDir, true));
+			//console.log("Zombie["+zombie+"]: direction "+zombieDir);
 		}
 	}
  
@@ -215,6 +217,10 @@ function bindKeys() {
     		var mouseOffset = new Point(e.clientX - offset.left, e.clientY - offset.top);
     		game.targetOffset = mouseOffset.subtract(new Point(canvas.width/2, canvas.height/2));
     		game.currentTarget = game.center.add(game.targetOffset);
+			console.log("New Relative Target: "+game.targetOffset.x+", "+game.targetOffset.y);
+			for (zombie in game.zombies) {
+				console.log("Zombie["+zombie+"]: position "+game.zombies[zombie].position.x+", "+game.zombies[zombie].position.y);
+			}
 		}
 	});
 }
