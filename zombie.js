@@ -63,7 +63,11 @@ var demoFSM = new StateMachine();
 demoFSM.setCurrentState(demoState);
 
 Zombie.prototype.update = function(game) {
-	this.velocity = steering.followLeader(this, game.player);
+	if (euclidianDistance(this.position, game.player.position) < 40) {
+		this.velocity = steering.separate(this, game.player);
+	} else {
+		this.velocity = steering.followLeader(this, game.player);
+	}
 
 
 	/*

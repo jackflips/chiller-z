@@ -20,7 +20,7 @@
 
         for (zombie in game.zombies) {
             if (game.zombies[zombie] != agent) {
-                if (euclidianDistance(agent.position, game.zombies[zombie].position) < 50) {
+                if (euclidianDistance(agent.position, game.zombies[zombie].position) < 55) {
                     v.x += game.zombies[zombie].position.x - agent.position.x;
                     v.y += game.zombies[zombie].position.y - agent.position.y;
                     neighborCount++;
