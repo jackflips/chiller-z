@@ -6,7 +6,7 @@ var debugCounter = 0;
 var lastCalledTime;
 var fps;
 
-var MOVEMENT_RATE = 5;
+var MOVEMENT_RATE = 4;
 
 function Point(x, y) {
 	return new Vector(x, y);

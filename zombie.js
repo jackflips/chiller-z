@@ -1,7 +1,7 @@
 function Zombie(position, velocity) {
 	this.hunger = 0;
 	this.target;
-	this.maxSpeed = 2;
+	this.maxSpeed = 3.5;
 	this.position = position;
 	this.velocity = velocity;
 }
@@ -63,7 +63,7 @@ var demoFSM = new StateMachine();
 demoFSM.setCurrentState(demoState);
 
 Zombie.prototype.update = function(game) {
-	this.velocity = steering.seek(this, game.player);
+	this.velocity = steering.followLeader(this, game.player);
 
 
 	/*

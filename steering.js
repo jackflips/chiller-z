@@ -1,9 +1,11 @@
 (function() {
 
     function followLeader(agent, leader) {
-        sepForce = separate(agent, leader);
-        console.log(sepForce);
-        return seek(agent, leader).add(sepForce);
+        var force = seek(agent, leader).add(separate(agent, leader));
+        if (force.length() > agent.maxSpeed)
+            return force.unit().multiply(agent.maxSpeed);
+        else
+            return force;
     }
 
     function seek(agent, leader) {
@@ -13,21 +15,24 @@
     }
 
     function separate(agent, leader) {
-        var force = new Vector(0, 0);
+        var v = new Vector(0, 0);
         var neighborCount = 0;
+
         for (zombie in game.zombies) {
-            if (euclidianDistance(agent.position, game.zombies[zombie].position) <= 100) {
-                force = force.subtract(game.zombies[zombie].position.subtract(agent.position));
-                neighborCount++;
+            if (game.zombies[zombie] != agent) {
+                if (euclidianDistance(agent.position, game.zombies[zombie].position) < 50) {
+                    v.x += game.zombies[zombie].position.x - agent.position.x;
+                    v.y += game.zombies[zombie].position.y - agent.position.y;
+                    neighborCount++;
+                }
             }
         }
+        if (neighborCount == 0)
+            return v;
 
-        if (neighborCount != 0) {
-            force.x /= neighborCount;
-            force.y /= neighborCount;
-            force = force.negative();
-        }
-        return force.unit().multiply(300);
+        v.x /= neighborCount;
+        v.y /= neighborCount;
+        return v.negative().unit();
     }
 
     window.steering = {
