@@ -34,14 +34,6 @@ function Game() {
 	this.zombies = [];
 }
 
-function Zombie(position, direction) {
-	this.hunger = 0;
-	this.target;
-	this.speed = 2;
-	this.position = position;
-	this.direction = direction;
-}
-
 function isoTo2D(point) {
 	var tempPt = new Point(0, 0);
 	tempPt.x = (2 * point.y + point.x) / 2;
@@ -164,6 +156,9 @@ function draw() {
 	}
 
 	//update positions of npcs
+	for (zombie in game.zombies) {
+		game.zombies[zombie].update();
+	}
 
 	//update position of zombies per frame based on direction and speed. (write this now.)
 	for (zombie in game.zombies) {
