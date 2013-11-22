@@ -49,9 +49,9 @@ function twoDToIso(point) {
 
 function euclidianDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
 	if (point2)
-		return (Math.sqrt(Math.pow(point2.x - point1.x, 2), Math.pow(point2.y - point1.y, 2)));
+		return (Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)));
 	else
-		return Math.sqrt(Math.pow(point1.x, 2), Math.pow(point1.y, 2));
+		return Math.sqrt(Math.pow(point1.x, 2) + Math.pow(point1.y, 2));
 }
 
 window.requestAnimFrame = (function(){
@@ -132,8 +132,17 @@ function draw() {
 		if (euclidianDistance(game.currentTarget, game.center) < 5) {
 			game.currentTarget = null;
 		} else {
+
+			var hyp = euclidianDistance(game.targetOffset);
+			console.log(game.targetOffset, hyp);
+			var triangleFactor = hyp / MOVEMENT_RATE;
+			game.center.x += game.targetOffset.x / triangleFactor;
+			game.center.y += game.targetOffset.y / triangleFactor;
+
+			/*
 			game.center.x += MOVEMENT_RATE * (game.targetOffset.x / (Math.abs(game.targetOffset.x) + Math.abs(game.targetOffset.y)));
 			game.center.y += MOVEMENT_RATE * (game.targetOffset.y / (Math.abs(game.targetOffset.x) + Math.abs(game.targetOffset.y)));
+			*/
 		}
 	}	
 
@@ -190,7 +199,6 @@ function bindKeys() {
     		var mouseOffset = new Point(e.clientX - offset.left, e.clientY - offset.top);
     		game.targetOffset = mouseOffset.subtractPoint(new Point(canvas.width/2, canvas.height/2));
     		game.currentTarget = game.center.addPoint(game.targetOffset);
-    		console.log(Math.tan(game.targetOffset.y / game.targetOffset.x) * 180/Math.PI);
 		}
 	});
 }
