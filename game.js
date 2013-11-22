@@ -167,7 +167,7 @@ function draw() {
 		var newY = Math.sin(thisZombie.direction) * thisZombie.speed;
 		thisZombie.position.x += newX;
 		thisZombie.position.y += newY;
-		thisZombie.direction += .01;
+		//thisZombie.direction += .01;
 	}
 
 

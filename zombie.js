@@ -7,7 +7,7 @@ function Zombie(position, direction) {
 }
 
 //Conditions
-var time = 10;
+var time = 100;
 var condition = new Condition();
 condition.counter = time;
 condition.test = function() {
@@ -21,10 +21,10 @@ condition.test = function() {
 };
 
 //Actions
-var action1 = function() {console.log("GRAAAHHH (action1 running)"); this.direction += 0.1;};
+var action1 = function() {console.log("GRAAAHHH (action1 running)");};
 var enter1 = function() {console.log("entering state 1");};
 var exit1 = function() {console.log("exiting action 1");};
-var action2 = function() {console.log("guuhhhh (action2 running)"); this.direction -= 0.1;};
+var action2 = function() {console.log("guuhhhh (action2 running)");};
 var enter2 = function() {console.log("entering state 2");};
 var exit2 = function() {console.log("exiting action 2");};
 var transAction = function() {console.log("transition action running");};
@@ -48,19 +48,23 @@ var trans = new Transition();
 trans.setTargetState(demoState2);
 trans.setAction(transAction);
 trans.setCondition(condition);
-var trans2 = trans;
+var trans2 = new Transition();
 trans2.setTargetState(demoState);
+trans2.setAction(transAction);
+trans2.setCondition(condition);
 
-demoTrans.push(trans);
+demoTrans1.push(trans);
 demoTrans2.push(trans2);
-demoState.setTransitions(demoTrans);
-demoState.setTransitions(demoTrans2);
+demoState.setTransitions(demoTrans1);
+demoState2.setTransitions(demoTrans2);
 
 //State Machine
-var demoFSM = new FSM();
+var demoFSM = new StateMachine();
 demoFSM.setCurrentState(demoState);
 
 Zombie.prototype.update = function(game) {
 	var actions = demoFSM.update();
 	for (var act in actions) {actions[act]();}
+	if (demoFSM.getCurrentState() == demoState) {this.direction+=0.1;}
+	else {this.direction-=0.1;}
 };
