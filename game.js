@@ -60,10 +60,21 @@ function generateMap() {
 	for (i=-200; i<200; i++) {
 		map[i] = []
 		for (j=-200; j<200; j++) {
-			if (Math.random() < 0.7) 
-	    		map[i][j] = 0;
-	    	else 
-	    		map[i][j] = 1;
+			if ((i < -195 || i > 195) || (j < -195 || j > 195)) {
+				//outer border is mountains
+				if (Math.random() < 0.8) {
+					map[i][j] = 2;
+				} else {
+					map[i][j] = 1;
+				}
+			} else {
+				//not mountains
+				if (Math.random() < 0.7) {
+					map[i][j] = 0;
+				} else {
+					map[i][j] = 1;
+				}
+			}
 		}
 	}
 	return map;
@@ -83,6 +94,9 @@ function Sprite(image, pos, size, rotation, isCharacter) {
 	}
 	else if (image == 1) {
 		this.image = "dirt.png";
+	}
+	else if (image == 2) {
+		this.image = "rock.jpg";
 	}
 	else {
 		this.image = image;
@@ -223,7 +237,8 @@ $(function() { //jquery loaded
     	'dirt.png',
     	'car.png',
     	'zombie1.png',
-    	'bluedot.png'
+    	'bluedot.png',
+		'rock.jpg'
    	]);
     resources.onReady(animate);
     bindKeys();
