@@ -229,8 +229,8 @@ $(function() { //jquery loaded
 	game.context = game.canvas.getContext('2d');
 	game.player = new Player();
 	game.player.position = game.center;
-	for (i=0; i<4; i++) {
-    	game.zombies.push(new Zombie(new Point(i*250, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
+	for (i=0; i<9; i++) {
+    	game.zombies.push(new Zombie(new Point(i*25, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
     resources.load([
     	'grass.png',

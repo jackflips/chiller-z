@@ -43,6 +43,12 @@ Vector.prototype = {
   unit: function() {
     return this.divide(this.length());
   },
+  truncate: function(max) {
+    if (this.length() > max) {
+      return this.unit().multiply(max);
+    }
+    return this;
+  },
   min: function() {
     return Math.min(Math.min(this.x, this.y), this.z);
   },
