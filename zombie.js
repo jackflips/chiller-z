@@ -85,3 +85,15 @@ Zombie.prototype.update = function(game) {
 		this.velocity = new Vector(0,0,0);
 	}
 };
+
+Zombie.prototype.drawVelocityVectors = function(){
+	game.context.fillStyle="#000000";
+	game.context.fillRect(0,0,1000,1000);
+	game.context.lineWidth='3';
+	game.context.strokeStyle='purple';
+	game.context.beginPath();
+    game.context.moveTo((this.position.x + game.canvas.width/2), this.position.y + game.canvas.height/2);
+    game.context.lineTo((this.position.add(this.velocity) + game.canvas.width/2), (this.position.add(this.velocity) + game.canvas.height/2));
+	game.context.stroke();
+	game.context.closePath();
+}
