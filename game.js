@@ -191,13 +191,17 @@ function draw() {
 			var zombiePos = new Point(game.zombies[zombie].position.x - game.center.x, game.zombies[zombie].position.y - game.center.y);
 			var zombieDir = Math.atan2(game.zombies[zombie].velocity.y, game.zombies[zombie].velocity.x);
 			sprites.push(new Sprite("zombie1.png", [zombiePos.x, zombiePos.y], [50, 50], zombieDir, true));
-			game.zombies[zombie].drawVelocityVectors();
 			//console.log("Zombie["+zombie+"]: direction "+zombieDir);
 			}
 	}
 	
 	for (sprite in sprites) {
 		sprites[sprite].staticRender(game.context);
+	}
+	
+	//draw zombie velocity vectors
+	for (zombie in game.zombies) {
+		game.zombies[zombie].drawVelocityVectors();
 	}
 
 	debugCounter++;
