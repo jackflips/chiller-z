@@ -243,7 +243,6 @@ $(function() { //jquery loaded
     	'dirt.png',
     	'car.png',
     	'zombie1.png',
-    	'bluedot.png',
 		'rock.jpg'
    	]);
     resources.onReady(animate);
