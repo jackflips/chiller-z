@@ -3,8 +3,7 @@ var game;
 var sprites = [];
 var debugCounter = 0;
 
-var lastCalledTime;
-var fps;
+var g = 0;
 
 var MOVEMENT_RATE = 4;
 
@@ -154,7 +153,7 @@ function draw() {
 
 	//update positions of npcs
 	for (zombie in game.zombies) {
-		game.zombies[zombie].update(game);
+			game.zombies[zombie].update(game);
 	}
 
 	//update position of zombies per frame based on direction and speed. (write this now.)
@@ -194,6 +193,7 @@ function draw() {
 			//console.log("Zombie["+zombie+"]: direction "+zombieDir);
 		}
 	}
+
  
 
 	for (sprite in sprites) {
@@ -217,10 +217,6 @@ function bindKeys() {
     		var mouseOffset = new Point(e.clientX - offset.left, e.clientY - offset.top);
     		game.targetOffset = mouseOffset.subtract(new Point(canvas.width/2, canvas.height/2));
     		game.currentTarget = game.center.add(game.targetOffset);
-			console.log("New Relative Target: "+game.targetOffset.x+", "+game.targetOffset.y);
-			for (zombie in game.zombies) {
-				console.log("Zombie["+zombie+"]: position "+game.zombies[zombie].position.x+", "+game.zombies[zombie].position.y);
-			}
 		}
 	});
 }
@@ -235,8 +231,8 @@ $(function() { //jquery loaded
 	game.context = game.canvas.getContext('2d');
 	game.player = new Player();
 	game.player.position = game.center;
-	for (i=0; i<9; i++) {
-    	game.zombies.push(new Zombie(new Point(i*25, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
+	for (i=0; i<150; i++) {
+    	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
     resources.load([
     	'grass.png',

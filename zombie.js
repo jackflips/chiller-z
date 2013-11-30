@@ -74,14 +74,14 @@ Zombie.prototype.update = function(game) {
 
 	var actions = demoFSM.update();
 	for (var act in actions) {actions[act]();}
-	if (demoFSM.getCurrentState() == demoState) 
-	{
+	//if (demoFSM.getCurrentState() == demoState) 
+	//{
 		//this.velocity = steering.followLeader(this, game.player);
 		var toSteer = steering.followLeader(this, game.player).divide(25);
 		this.velocity = this.velocity.add(toSteer).truncate(this.maxSpeed);
-	}
-	else
-	{
-		this.velocity = new Vector(0,0,0);
-	}
+	//}
+	//else
+	//{
+	//	this.velocity = new Vector(0,0,0);
+	//}
 };

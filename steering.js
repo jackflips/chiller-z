@@ -11,7 +11,7 @@
     function seek(agent, leader) {
         var tv = leader.velocity.negative().unit().multiply(2); //10 is tail constant
         var behind = leader.position.add(tv);
-        return behind.subtract(agent.position).unit().multiply(agent.maxSpeed);
+        return behind.subtract(agent.position).unit().multiply(agent.maxSpeed).unit();
     }
 
     function separate(agent, leader) {
