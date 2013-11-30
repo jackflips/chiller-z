@@ -21,9 +21,7 @@ condition.test = function() {
 };
 
 //Actions
-var action1 = function() {
-
-};
+var action1 = function() {};
 var enter1 = function() {};
 var exit1 = function() {};
 var action2 = function() {};
@@ -85,3 +83,14 @@ Zombie.prototype.update = function(game) {
 	//	this.velocity = new Vector(0,0,0);
 	//}
 };
+
+Zombie.prototype.drawVelocityVectors = function(){
+	game.context.lineWidth="3";
+	game.context.strokeStyle="purple";
+	game.context.beginPath();
+    game.context.moveTo(this.position.x, this.position.y);
+    game.context.lineTo((this.position.add(this.velocity)), (this.position.add(this.velocity)));
+	console.log("zombie position: " + (this.position.x) + " " + (this.position.y));
+	game.context.stroke();
+	game.context.closePath();
+}
