@@ -90,7 +90,6 @@ Zombie.prototype.drawVelocityVectors = function(){
 	game.context.beginPath();
     game.context.moveTo(this.position.x, this.position.y);
     game.context.lineTo((this.position.add(this.velocity)), (this.position.add(this.velocity)));
-	console.log("zombie position: " + (this.position.x) + " " + (this.position.y));
 	game.context.stroke();
 	game.context.closePath();
 }
