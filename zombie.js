@@ -88,8 +88,8 @@ Zombie.prototype.drawVelocityVectors = function(){
 	game.context.lineWidth="3";
 	game.context.strokeStyle="purple";
 	game.context.beginPath();
-    game.context.moveTo(this.position.x, this.position.y);
-    game.context.lineTo((this.position.add(this.velocity)), (this.position.add(this.velocity)));
+    game.context.moveTo((this.position.x + 400), (this.position.y + 300));
+    game.context.lineTo(((this.position.x + this.velocity.x + 400)*1.2), ((this.position.y + this.velocity.y + 300)*1.2));
 	game.context.stroke();
-	game.context.closePath();
+	//console.log((this.position.x + this.velocity.x + 400));
 }

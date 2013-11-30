@@ -19,6 +19,7 @@ function Game() {
 	this.currentTarget;
 	this.targetOffset = new Point(0, -1);
 	this.zombies = [];
+	this.humans = [];
 	this.player;
 }
 
@@ -162,6 +163,13 @@ function draw() {
 		thisZombie.position.x += thisZombie.velocity.x;
 		thisZombie.position.y += thisZombie.velocity.y;
 	}
+	
+	//update position of humans per frame based on direction and speed
+	for (human in game.humans) {
+		var thisHuman = game.humans[human];
+		thisHuman.position.x += thisHuman.velocity.x;
+		thisHuman.position.y += thisHuman.velocity.y;
+	}
 
 	//now draw
 	//--------
@@ -191,6 +199,16 @@ function draw() {
 			var zombieDir = Math.atan2(game.zombies[zombie].velocity.y, game.zombies[zombie].velocity.x);
 			sprites.push(new Sprite("zombie1.png", [zombiePos.x, zombiePos.y], [50, 50], zombieDir, true));
 			//console.log("Zombie["+zombie+"]: direction "+zombieDir);
+			}
+	}
+	
+	//draw humans
+	for (human in game.humans) {
+		if (clip(game.humans[human].position, new Point(80, 80))) {
+			var lastPos = humanPos;
+			var humanPos = new Point(game.humans[human].position.x - game.center.x, game.humans[human].position.y - game.center.y);
+			var humanDir = Math.atan2(game.humans[human].velocity.y, game.humans[human].velocity.x);
+			sprites.push(new Sprite("pikachu.gif", [humanPos.x, humanPos.y], [80, 80], humanDir, true));
 			}
 	}
 	
@@ -234,15 +252,17 @@ $(function() { //jquery loaded
 	game.context = game.canvas.getContext('2d');
 	game.player = new Player();
 	game.player.position = game.center;
-	for (i=0; i<150; i++) {
+	for (i=0; i<5; i++) {
     	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
+	//game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
     resources.load([
     	'grass.png',
     	'dirt.png',
     	'car.png',
     	'zombie1.png',
 		'rock.jpg'
+		//'pikachu.gif'
    	]);
     resources.onReady(animate);
     bindKeys();
