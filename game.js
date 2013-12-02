@@ -27,7 +27,7 @@ function Player() {
 	this.health = 100;
 	this.position;
 	this.velocity = new Vector(0, 0);
-	this.size = new Point(78, 150);
+	this.size = new Point(75, 75);
 }
 
 function euclidianDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
@@ -188,8 +188,8 @@ function draw() {
 	//draw characters
 	//---------------
 	//draw car
-	var carDirection = Math.atan2(game.targetOffset.y, game.targetOffset.x);
-	sprites.push(new Sprite("car.png", [game.canvas.width/2 - 39, game.canvas.height/2 - 75], [78, 150], carDirection));
+	var necroDirection = Math.atan2(game.targetOffset.y, game.targetOffset.x);
+	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 39, game.canvas.height/2 - 75], [75, 75], necroDirection));
 
 	//draw zombies
 	for (zombie in game.zombies) {
@@ -217,9 +217,9 @@ function draw() {
 	}
 	
 	//draw zombie velocity vectors
-	for (zombie in game.zombies) {
-		game.zombies[zombie].drawVelocityVectors();
-	}
+	//for (zombie in game.zombies) {
+	//	game.zombies[zombie].drawVelocityVectors();
+	//}
 
 	debugCounter++;
 }
@@ -261,8 +261,9 @@ $(function() { //jquery loaded
     	'dirt.png',
     	'car.png',
     	'zombie1.png',
-		'rock.jpg'
-		//'pikachu.gif'
+		'rock.jpg',
+		'necromancer.png',
+		'pikachu.gif'
    	]);
     resources.onReady(animate);
     bindKeys();
