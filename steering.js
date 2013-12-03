@@ -34,10 +34,10 @@
         var neighborCount = 0;
 
 		//consts
-		var maxDist = 70;
+		const maxDist = 70;
 
 		{
-			var dist = euclidianDistance(agent.position, leader.position)
+			var dist = euclideanDistance(agent.position, leader.position)
 			if (dist < maxDist)
 			{
 				var diff = leader.position.subtract(agent.position);
@@ -47,7 +47,7 @@
 		}
 		for (member in horde) {
             if (horde[member] != agent) {
-				var dist = euclidianDistance(agent.position, horde[member].position)
+				var dist = euclideanDistance(agent.position, horde[member].position)
 				if (dist < maxDist)
 				{
 					var diff = horde[member].position.subtract(agent.position);
@@ -63,9 +63,34 @@
         return force.negative();
     }
 
+	function wander(agent)
+	{
+		//TODO
+	}
+	
+	function evade(agent, pursuer)
+	{
+		//TODO
+	}
+	
+	//not sure if method signature correct
+	//therefore, is not in the list
+	function avoid_obstacles(agent)
+	{
+		//TODO
+	}
+	
+	function pursue(agent, quarry)
+	{
+		//TODO
+	}
+	
     window.steering = {
         followLeader: followLeader,
         seek: seek,
-        separate: separate
+        separate: separate,
+		wander: wander,
+		evade: evade,
+		pursue: pursue
     }
 })();

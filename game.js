@@ -30,7 +30,7 @@ function Player() {
 	this.size = new Point(75, 75);
 }
 
-function euclidianDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
+function euclideanDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
 	if (point2)
 		return (Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)));
 	else
@@ -143,10 +143,10 @@ function draw() {
 	//----------------
 	//update position of viewport and necromancer
 	if (game.currentTarget) {
-		if (euclidianDistance(game.currentTarget, game.center) < 5) {
+		if (euclideanDistance(game.currentTarget, game.center) < 5) {
 			game.player.velocity = new Vector(0, 0);
 		} else {
-			var triangleFactor = euclidianDistance(game.targetOffset) / MOVEMENT_RATE;
+			var triangleFactor = euclideanDistance(game.targetOffset) / MOVEMENT_RATE;
 			game.player.velocity = game.targetOffset.divide(triangleFactor);
 			game.center = game.center.add(game.player.velocity);
 			game.player.position.x = game.center.x - 32;

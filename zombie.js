@@ -1,93 +1,123 @@
-var maxMaxSpeed = 5.0;
+const maxMaxSpeed = 5.0;
+const maxHunger = 1000;
+const hungerSlowFactor = .005;
+const hungerTransitionLevel = 800;
 
+//TODO: add logic for feeding state
 function Zombie(position, velocity) {
 	this.hunger = 0;
 	this.target;
 	this.maxSpeed = 3.5;
 	this.position = position;
 	this.velocity = velocity;
-}
-
-//Conditions
-var time = 400;
-var condition = new Condition();
-condition.counter = time;
-condition.test = function() {
-	if (this.counter <= 0) {
-		this.counter = time;
-		return true;
-	}
-	this.counter--;
-	return false;
 	
-};
+	var thisZombie = this;
+	
+	//Conditions
+	var isHungered = new Condition();
+	isHungered.test = function() {
+		if(thisZombie.hunger >= hungerTransitionLevel)
+			return true;
+		return false;
+	};
+	
+	var isSated = new Condition();
+	isSated.test = function() {
+		if(thisZombie.hunger < hungerTransitionLevel)
+			return true;
+		return false;
+	};
+	
+	var humanIsNear = new Condition();
+	humanIsNear.test = function() {
+		return false
+		//HUMANS_TODO
+	};
+	
+	//Actions
+	var follow = function() 
+	{
+		var toSteer = steering.followLeader(thisZombie, game.player, game.zombies);
+		toSteer = toSteer.divide(4);
+		thisZombie.velocity = thisZombie.velocity.add(toSteer).truncate(thisZombie.maxSpeed);
+	};
+	var wander = function()
+	{
+		//TODO
+	};
+	var chase = function()
+	{
+		//HUMANS_TODO
+	};
+	
+	var emptyAction = function() {};
 
-//Actions
-var action1 = function(zombie) 
-{
-	var toSteer = steering.followLeader(zombie, game.player, game.zombies);
-	toSteer = toSteer.divide(4);
-	zombie.velocity = zombie.velocity.add(toSteer).truncate(zombie.maxSpeed);
-};
-var enter1 = function(zombie) {};
-var exit1 = function(zombie) {};
-var action2 = function(zombie) {};
-var enter2 = function(zombie) {};
-var exit2 = function(zombie) {};
-var transAction = function(zombie) {};
+	//States
+	var followState = new State();
+	followState.setAction(follow);
+	followState.setEntryAction(emptyAction);
+	followState.setExitAction(emptyAction);
+	
+	var hungerState = new State();
+	hungerState.setAction(wander);
+	hungerState.setEntryAction(emptyAction);
+	hungerState.setExitAction(emptyAction);
+	
+	var chasingState = new State();
+	chasingState.setAction(chase);
+	chasingState.setEntryAction(emptyAction);
+	chasingState.setExitAction(emptyAction);
 
-//Transition Lists
-var demoTrans1 = new Array();
-var demoTrans2 = new Array();
+	//Transitions
+	var hungryTransition = new Transition();
+	hungryTransition.setTargetState(hungerState);
+	hungryTransition.setAction(emptyAction);
+	hungryTransition.setCondition(isHungered);
+	
+	var satedTransition = new Transition();
+	satedTransition.setTargetState(followState);
+	satedTransition.setAction(emptyAction);
+	satedTransition.setCondition(isSated);
+	
+	var humanNearTransition = new Transition();
+	humanNearTransition.setTargetState(chasingState);
+	humanNearTransition.setAction(emptyAction);
+	humanNearTransition.setCondition(humanIsNear);
+	
+	//Transition Lists
+	var followTransitions = new Array();
+	var hungerTransitions = new Array();
+	var chasingTransitions = new Array();
+	
+	followTransitions.push(hungryTransition);
+	followTransitions.push(humanNearTransition);
+	
+	hungerTransitions.push(satedTransition);
+	hungerTransitions.push(humanNearTransition);
+	
+	//TODO: chasing transitions
+	
+	followState.setTransitions(followTransitions);
+	hungerState.setTransitions(hungerTransitions);
+	chasingState.setTransitions(chasingTransitions);
 
-//States
-var demoState = new State();
-demoState.setAction(action1);
-demoState.setEntryAction(enter1);
-demoState.setExitAction(exit1);
-var demoState2 = new State();
-demoState2.setAction(action2);
-demoState2.setEntryAction(enter2);
-demoState2.setExitAction(exit2);
-
-//Transitions
-var trans = new Transition();
-trans.setTargetState(demoState2);
-trans.setAction(transAction);
-trans.setCondition(condition);
-var trans2 = new Transition();
-trans2.setTargetState(demoState);
-trans2.setAction(transAction);
-trans2.setCondition(condition);
-
-demoTrans1.push(trans);
-demoTrans2.push(trans2);
-demoState.setTransitions(demoTrans1);
-demoState2.setTransitions(demoTrans2);
-
-//State Machine
-var demoFSM = new StateMachine();
-demoFSM.setCurrentState(demoState);
+	//State Machine
+	this.FSM = new StateMachine();
+	this.FSM.setCurrentState(followState);
+}
 
 Zombie.prototype.update = function(game) {
 	
-	/*if (euclidianDistance(this.position, game.player.position) < 40) {
-		this.velocity = steering.separate(this, game.player);
-	} else {
-		this.velocity = steering.followLeader(this, game.player);
-	}//*/
+	this.hunger++;
+	this.maxSpeed = maxMaxSpeed - (this.hunger * hungerSlowFactor);
 
-	var actions = demoFSM.update();
-	for (var act in actions) {actions[act](this);}
-	//if (demoFSM.getCurrentState() == demoState) 
-	//{
-		//this.velocity = steering.followLeader(this, game.player);
+	var actions = this.FSM.update();
+	for (var act in actions) {actions[act]();}
 	
-	//}
-	//else
-	//{
-	//	this.velocity = new Vector(0,0,0);
-	//}
+	
+	//HUMANS_TODO: remove this
+	if(this.hunger == maxHunger)
+		this.hunger = 0;
 };
 
 Zombie.prototype.drawVelocityVectors = function(){
