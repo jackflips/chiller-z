@@ -136,6 +136,7 @@ Sprite.prototype._staticRender = function(ctx) {
                   this.size[0], this.size[1]);
 }
 
+//both draws and updates
 function draw() {
 
 	//update positions
@@ -148,7 +149,8 @@ function draw() {
 			var triangleFactor = euclidianDistance(game.targetOffset) / MOVEMENT_RATE;
 			game.player.velocity = game.targetOffset.divide(triangleFactor);
 			game.center = game.center.add(game.player.velocity);
-			game.player.position = game.center;
+			game.player.position.x = game.center.x - 32;
+			game.player.position.y = game.center.y - 32;
 		}
 	}
 
@@ -157,7 +159,7 @@ function draw() {
 			game.zombies[zombie].update(game);
 	}
 
-	//update position of zombies per frame based on direction and speed. (write this now.)
+	//update position of zombies per frame based on velocity vector
 	for (zombie in game.zombies) {
 		var thisZombie = game.zombies[zombie];
 		thisZombie.position.x += thisZombie.velocity.x;
@@ -187,9 +189,9 @@ function draw() {
 
 	//draw characters
 	//---------------
-	//draw car
+	//draw necromancer
 	var necroDirection = Math.atan2(game.targetOffset.y, game.targetOffset.x);
-	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 39, game.canvas.height/2 - 75], [75, 75], necroDirection));
+	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 32, game.canvas.height/2 - 32], [75, 75], necroDirection));
 
 	//draw zombies
 	for (zombie in game.zombies) {

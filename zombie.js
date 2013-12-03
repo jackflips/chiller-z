@@ -75,8 +75,9 @@ Zombie.prototype.update = function(game) {
 	//if (demoFSM.getCurrentState() == demoState) 
 	//{
 		//this.velocity = steering.followLeader(this, game.player);
-		var toSteer = steering.followLeader(this, game.player).divide(25);
-		this.velocity = this.velocity.add(toSteer).truncate(this.maxSpeed);
+	var toSteer = steering.followLeader(this, game.player, game.zombies);
+	toSteer = toSteer.divide(3)
+	this.velocity = this.velocity.add(toSteer).truncate(this.maxSpeed);
 	//}
 	//else
 	//{

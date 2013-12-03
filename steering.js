@@ -1,38 +1,66 @@
 (function() {
 
-    function followLeader(agent, leader) {
-        var force = seek(agent, leader).add(separate(agent, leader));
-        if (force.length() > agent.maxSpeed)
+    function followLeader(agent, leader, horde) {
+        var force = seek(agent, leader).add(separate(agent, leader, horde));
+        //*/var force = seek(agent, leader)
+		if (force.length() > agent.maxSpeed)
             return force.unit().multiply(agent.maxSpeed);
         else
             return force;
     }
 
     function seek(agent, leader) {
-        var tv = leader.velocity.negative().unit().multiply(2); //10 is tail constant
-        var behind = leader.position.add(tv);
-        return behind.subtract(agent.position).unit().multiply(agent.maxSpeed).unit();
+		var target;
+		if(leader.velocity.length() != 0)
+		{
+			//if leader is moving, move to a point behind
+			var tv = leader.velocity.negative();
+			tv = tv.unit();
+			tv = tv.multiply(70); //70 is tail constant
+			target = leader.position.add(tv);
+		}
+		else
+		{
+			//otherwise, move to the leader's position
+			target = leader.position;
+		}
+		target = target.subtract(agent.position);
+		target.truncate(agent.maxSpeed * 2);
+		return target.divide(2);
     }
 
-    function separate(agent, leader) {
-        var v = new Vector(0, 0);
+    function separate(agent, leader, horde) {
+        var force = new Vector(0, 0);
         var neighborCount = 0;
 
-        for (zombie in game.zombies) {
-            if (game.zombies[zombie] != agent) {
-                if (euclidianDistance(agent.position, game.zombies[zombie].position) < 55) {
-                    v.x += game.zombies[zombie].position.x - agent.position.x;
-                    v.y += game.zombies[zombie].position.y - agent.position.y;
-                    neighborCount++;
-                }
+		//consts
+		var maxDist = 55;
+
+		{
+			var dist = euclidianDistance(agent.position, leader.position)
+			if (dist < maxDist)
+			{
+				var diff = leader.position.subtract(agent.position);
+				force = diff.unit().multiply(maxDist);
+				neighborCount++;
+			}
+		}
+		for (member in horde) {
+            if (horde[member] != agent) {
+				var dist = euclidianDistance(agent.position, horde[member].position)
+				if (dist < maxDist)
+				{
+					var diff = horde[member].position.subtract(agent.position);
+					force = force.add(diff.unit().multiply(maxDist));
+					neighborCount++;
+				}
             }
         }
         if (neighborCount == 0)
-            return v;
+            return force;
 
-        v.x /= neighborCount;
-        v.y /= neighborCount;
-        return v.negative().unit();
+		force = force.divide(neighborCount);
+        return force.negative();
     }
 
     window.steering = {
