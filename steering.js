@@ -34,7 +34,7 @@
         var neighborCount = 0;
 
 		//consts
-		var maxDist = 55;
+		var maxDist = 70;
 
 		{
 			var dist = euclidianDistance(agent.position, leader.position)

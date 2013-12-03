@@ -1,3 +1,5 @@
+var maxMaxSpeed = 5.0;
+
 function Zombie(position, velocity) {
 	this.hunger = 0;
 	this.target;
@@ -7,7 +9,7 @@ function Zombie(position, velocity) {
 }
 
 //Conditions
-var time = 4000;
+var time = 400;
 var condition = new Condition();
 condition.counter = time;
 condition.test = function() {
@@ -21,13 +23,18 @@ condition.test = function() {
 };
 
 //Actions
-var action1 = function() {};
-var enter1 = function() {};
-var exit1 = function() {};
-var action2 = function() {};
-var enter2 = function() {};
-var exit2 = function() {};
-var transAction = function() {};
+var action1 = function(zombie) 
+{
+	var toSteer = steering.followLeader(zombie, game.player, game.zombies);
+	toSteer = toSteer.divide(4);
+	zombie.velocity = zombie.velocity.add(toSteer).truncate(zombie.maxSpeed);
+};
+var enter1 = function(zombie) {};
+var exit1 = function(zombie) {};
+var action2 = function(zombie) {};
+var enter2 = function(zombie) {};
+var exit2 = function(zombie) {};
+var transAction = function(zombie) {};
 
 //Transition Lists
 var demoTrans1 = new Array();
@@ -71,13 +78,11 @@ Zombie.prototype.update = function(game) {
 	}//*/
 
 	var actions = demoFSM.update();
-	for (var act in actions) {actions[act]();}
+	for (var act in actions) {actions[act](this);}
 	//if (demoFSM.getCurrentState() == demoState) 
 	//{
 		//this.velocity = steering.followLeader(this, game.player);
-	var toSteer = steering.followLeader(this, game.player, game.zombies);
-	toSteer = toSteer.divide(3)
-	this.velocity = this.velocity.add(toSteer).truncate(this.maxSpeed);
+	
 	//}
 	//else
 	//{
