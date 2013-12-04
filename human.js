@@ -1,5 +1,5 @@
 const feedingRange = 400;
-const caughtDist = 25;
+const caughtDist = 5;
 const humanInertia = 10;
 
 function Human (position, velocity) {
@@ -54,8 +54,19 @@ function Human (position, velocity) {
 		toSteer = toSteer.divide(humanInertia);
 		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(thisHuman.maxSpeed);
 	}
-	var runAction = function() {}
-	var beingEatenAction = function() {}
+	var runAction = function() {
+		/*var quarry = findClosest(thisHuman, game.zombies);
+		var toSteer = steering.runAway(thisHuman, game.zombies).add(steering.separate(thisHuman, game.player, game.humans));
+		toSteer = toSteer.truncate(thisHuman.maxSpeed);
+		toSteer = toSteer.divide(humanInertia);
+		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(thisHuman.maxSpeed);*/
+		thisHuman.velocity = (2,2);
+	}
+	var beingEatenAction = function() {
+		/*var counter = 10000;
+		while (counter > 0) { counter--; }
+		thisHuman.velocity = (0,0);*/
+	}
 	var deathAction = function() {}	
 	var nullAction = function() {}
 
@@ -96,7 +107,7 @@ function Human (position, velocity) {
 	var runTransitions = new Array();
 	var beingEatenTransitions = new Array();
 	
-	wanderTransitions.push(closeTrans);
+	//wanderTransitions.push(closeTrans);
 	
 	runTransitions.push(farTrans);
 	runTransitions.push(caughtTrans);

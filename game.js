@@ -185,7 +185,7 @@ Sprite.prototype._staticRender = function(ctx) {
 function requestMove(position, velocity) {
 	var newPos = position.add(velocity);
 	var newPosTile = newPos.divide(96);
-	console.log(map[Math.round(newPosTile.x)][Math.round(newPosTile.y)]);
+	//console.log(map[Math.round(newPosTile.x)][Math.round(newPosTile.y)]);
 	if (map[Math.round(newPosTile.x)][Math.round(newPosTile.y)] =! 2) {
 		return newPos;
 	} else {
