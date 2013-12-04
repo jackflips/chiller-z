@@ -56,46 +56,94 @@ function generateMap() {
 	for (i=-200; i<200; i++) {
 		map[i] = []
 		for (j=-200; j<200; j++) {
-			if ((i < -195 || i > 195) || (j < -195 || j > 195)) {
+			if ((i < -195 || i > 190) || (j < -195 || j > 190)) {
 				//outer border is mountains
-				if (Math.random() < 0.8) {
+				map[i][j] = 3;
+			} else if ((i < -192 || i > 187) || (j < -192 || j > 187)) {
+				if (Math.random() < 0.4) {
 					map[i][j] = 3;
-				} else {
-					map[i][j] = 1;
-				}
-			} else {
-				//not mountains
-				if (Math.random() < 0.7) {
+				} else if (Math.random() > 0.5) {
 					map[i][j] = 0;
 				} else {
 					map[i][j] = 1;
 				}
+			} else {
+				map[i][j] = 0;
 			}
 		}
 	}
 	
-	var directions = {up: new Vector(0,-1), down: new Vector(0,1), left: new Vector(-1,0), right: new Vector(1,0)};
-	var last = directions.down;
-	var start = map[0][(Math.random()*400)-200];
-	var index = new Vector(0, start);
-	while (index.x > -200 && index.x < 200 && index.y > -200  && index.y < 200) {
-		chance = Math.random();
-		if (chance < .4 && last != directions.up) {
-			index = index.add(directions.down);
-			map[index.x][index.y] = 2;
-			last = directions.down;
-		} else if (chance < .6 && last != directions.right) {
-			index = index.add(directions.left);
-			map[index.x][index.y] = 2;
-			last = directions.left;
-		} else if (chance < .8 && last != directions.left) {
-			index = index.add(directions.right);
-			map[index.x][index.y] = 2;
-			last = directions.right;
-		} else if (last != directions.down) {
-			index = index.add(directions.up);
-			map[index.x][index.y] = 2;
-			last = directions.up;
+	for (s = 0; s < 4000; s++) {
+		source = map[0][0];
+		var dirt = new Vector(0, source);
+		dirt.x = Math.floor((Math.random()*400)-200);
+		dirt.y = Math.floor((Math.random()*400)-200);
+		map[dirt.x][dirt.y] = 1;
+		if (dirt.x > -190 && dirt.x < 190 && dirt.y > -190 && dirt.y < 190) {
+			// Because the game throws a fit if the random tile is on/near the edge
+			if (Math.random() < .5) {
+				map[dirt.x-1][dirt.y-1] = 1;
+			}
+			if (Math.random() < .6) {
+				map[dirt.x][dirt.y-1] = 1;
+			}
+			if (Math.random() < .5) {
+				map[dirt.x+1][dirt.y-1] = 1;
+			}
+			if (Math.random() < .4) {
+				map[dirt.x-1][dirt.y] = 1;
+			}
+			if (Math.random() < .5) {
+				map[dirt.x+1][dirt.y] = 1;
+			}
+			if (Math.random() < .6) {
+				map[dirt.x-1][dirt.y+1] = 1;
+			}
+			if (Math.random() < .7) {
+				map[dirt.x][dirt.y+1] = 1;
+			}
+			if (Math.random() < .6) {
+				map[dirt.x+1][dirt.y+1] = 1;
+			}
+			if (Math.random() < .5) {
+				map[dirt.x+2][dirt.y+1] = 1;
+			}
+			if (Math.random() < .3) {
+				map[dirt.x+1][dirt.y+2] = 1;
+			}
+			if (Math.random() < .3) {
+				map[dirt.x+2][dirt.y+2] = 1;
+			}
+			if (Math.random() < .3) {
+				map[dirt.x-2][dirt.y+1] = 1;
+			}
+		}
+	}
+	
+	for (i = 0; i < 2; i++) {
+		var directions = {up: new Vector(0,-1), down: new Vector(0,1), left: new Vector(-1,0), right: new Vector(1,0)};
+		var last = directions.down;
+		var start = map[0][0];
+		var index = new Vector(0, start);
+		while (index.x > -200 && index.x < 200 && index.y > -200  && index.y < 200) {
+			chance = Math.random();
+			if (chance < .4 && last != directions.up) {
+				index = index.add(directions.down);
+				map[index.x][index.y] = 2;
+				last = directions.down;
+			} else if (chance < .6 && last != directions.right) {
+				index = index.add(directions.left);
+				map[index.x][index.y] = 2;
+				last = directions.left;
+			} else if (chance < .8 && last != directions.left) {
+				index = index.add(directions.right);
+				map[index.x][index.y] = 2;
+				last = directions.right;
+			} else if (last != directions.down) {
+				index = index.add(directions.up);
+				map[index.x][index.y] = 2;
+				last = directions.up;
+			}
 		}
 	}
 	
