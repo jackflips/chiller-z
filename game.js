@@ -91,13 +91,13 @@ function Sprite(image, pos, size, rotation, isCharacter, shouldZoom) {
 	if (debugCounter % 100 == 0) {
 	}
 	if (image == 0) {
-		this.image = "grass.png";
+		this.image = "images/grass.png";
 	}
 	else if (image == 1) {
-		this.image = "dirt.png";
+		this.image = "images/dirt.png";
 	}
 	else if (image == 2) {
-		this.image = "rock.jpg";
+		this.image = "images/rock.jpg";
 	}
 	else {
 		this.image = image;
@@ -197,7 +197,7 @@ function draw() {
 	//---------------
 	//draw necromancer
 	var necroDirection = Math.atan2(game.targetOffset.y, game.targetOffset.x);
-	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 48.5, game.canvas.height/2 - 48.5], [97, 97], necroDirection, false, true));
+	sprites.push(new Sprite("images/necromancer.png", [game.canvas.width/2 - 48.5, game.canvas.height/2 - 48.5], [97, 97], necroDirection, false, true));
 
 	//draw zombies
 	for (zombie in game.zombies) {
@@ -205,7 +205,7 @@ function draw() {
 			var prevPos = zombiePos;
 			var zombiePos = new Point(game.zombies[zombie].position.x - game.center.x, game.zombies[zombie].position.y - game.center.y);
 			var zombieDir = Math.atan2(game.zombies[zombie].velocity.y, game.zombies[zombie].velocity.x);
-			sprites.push(new Sprite("zombie1.png", [zombiePos.x / game.zoomLevel, zombiePos.y / game.zoomLevel], [65, 65], zombieDir, true, true));
+			sprites.push(new Sprite("images/zombie1.png", [zombiePos.x / game.zoomLevel, zombiePos.y / game.zoomLevel], [65, 65], zombieDir, true, true));
 		}
 	}
 	
@@ -215,7 +215,7 @@ function draw() {
 			var lastPos = humanPos;
 			var humanPos = new Point(game.humans[human].position.x - game.center.x, game.humans[human].position.y - game.center.y);
 			var humanDir = Math.atan2(game.humans[human].velocity.y, game.humans[human].velocity.x);
-			sprites.push(new Sprite("human.png", [humanPos.x, humanPos.y], [80, 80], humanDir, true));
+			sprites.push(new Sprite("images/human.png", [humanPos.x, humanPos.y], [80, 80], humanDir, true));
 			}
 	}
 	
@@ -264,13 +264,13 @@ $(function() { //jquery loaded
 	}
 	game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
     resources.load([
-    	'grass.png',
-    	'dirt.png',
-    	'car.png',
-    	'zombie1.png',
-		'rock.jpg',
-		'necromancer.png',
-		'human.png'
+    	'images/grass.png',
+    	'images/dirt.png',
+    	'images/car.png',
+    	'images/zombie1.png',
+		'images/rock.jpg',
+		'images/necromancer.png',
+		'images/human.png'
    	]);
     resources.onReady(animate);
     bindKeys();
