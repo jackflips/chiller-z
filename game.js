@@ -38,6 +38,16 @@ function euclideanDistance(point1, point2) { //returns distance between 2 points
 		return Math.sqrt(Math.pow(point1.x, 2) + Math.pow(point1.y, 2));
 }
 
+function toDirection(vector)  //returns angle in radians of the given vector from 0,0
+{
+	return Math.atan2(vector.y, vector.x);
+}
+
+function toVector(direction)  //returns a unit vector pointing in the specified angle in radians from 0,0
+{
+	return new Vector(Math.cos(direction), Math.sin(direction));
+}
+
 function clip(point, size) {
 	if (point.x > game.center.x - (game.canvas.width/2 + size)*game.zoomLevel &&
 		point.x < game.center.x + (game.canvas.width/2)*game.zoomLevel &&
