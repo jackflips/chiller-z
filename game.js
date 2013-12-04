@@ -175,8 +175,8 @@ function draw() {
 		thisHuman.position.y += thisHuman.velocity.y;
 	}
 
-	game.zoomLevel = 1 + (.02 * game.zombies.length);
-	//game.zoomLevel = 1;
+	//game.zoomLevel = 1 + (.02 * game.zombies.length);
+	game.zoomLevel = 1;
 
 	//now draw
 	//--------
@@ -197,7 +197,7 @@ function draw() {
 	//---------------
 	//draw necromancer
 	var necroDirection = Math.atan2(game.targetOffset.y, game.targetOffset.x);
-	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 37.5, game.canvas.height/2 - 37.5], [97, 97], necroDirection, false, true));
+	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 48.5, game.canvas.height/2 - 48.5], [97, 97], necroDirection, false, true));
 
 	//draw zombies
 	for (zombie in game.zombies) {
@@ -259,7 +259,7 @@ $(function() { //jquery loaded
 	game.context = game.canvas.getContext('2d');
 	game.player = new Player();
 	game.player.position = game.center;
-	for (i=0; i<25; i++) {
+	for (i=0; i<7; i++) {
     	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
 	game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
