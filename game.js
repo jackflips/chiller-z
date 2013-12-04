@@ -27,7 +27,7 @@ function Player() {
 	this.health = 100;
 	this.position;
 	this.velocity = new Vector(0, 0);
-	this.size = new Point(75, 75);
+	this.size = new Point(75, 97);
 }
 
 function euclideanDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
@@ -191,15 +191,15 @@ function draw() {
 	//---------------
 	//draw necromancer
 	var necroDirection = Math.atan2(game.targetOffset.y, game.targetOffset.x);
-	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 32, game.canvas.height/2 - 32], [75, 75], necroDirection));
+	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 32, game.canvas.height/2 - 32], [75, 97], necroDirection));
 
 	//draw zombies
 	for (zombie in game.zombies) {
-		if (clip(game.zombies[zombie].position, new Point(50, 50))) {
+		if (clip(game.zombies[zombie].position, new Point(50, 65))) {
 			var prevPos = zombiePos;
 			var zombiePos = new Point(game.zombies[zombie].position.x - game.center.x, game.zombies[zombie].position.y - game.center.y);
 			var zombieDir = Math.atan2(game.zombies[zombie].velocity.y, game.zombies[zombie].velocity.x);
-			sprites.push(new Sprite("zombie1.png", [zombiePos.x, zombiePos.y], [50, 50], zombieDir, true));
+			sprites.push(new Sprite("zombie1.png", [zombiePos.x, zombiePos.y], [50, 65], zombieDir, true));
 			//console.log("Zombie["+zombie+"]: direction "+zombieDir);
 			}
 	}
