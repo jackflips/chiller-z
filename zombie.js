@@ -1,9 +1,10 @@
 const maxMaxSpeed = 5.0;
 const maxHunger = 1000;
 const hungerSlowFactor = .005;
-const hungerTransitionLevel = 400;
+const hungerTransitionLevel = 800;
 const zombieInertia = 10;
 const humanProximityStartChase = 200;
+const humanProximityEndChase = 300;
 
 
 //TODO: add logic for feeding state
@@ -42,6 +43,18 @@ function Zombie(position, velocity) {
 			}
 		}
 		return false;
+	};
+	
+	var humanIsFar = new Condition();
+	humanIsFar.test = function() {
+		for(human in game.humans)
+		{
+			if(euclideanDistance(thisZombie.position, game.humans[human].position) < humanProximityEndChase)
+			{
+				return false;
+			}
+		}
+		return true;
 	};
 	
 	//Actions
@@ -101,6 +114,11 @@ function Zombie(position, velocity) {
 	humanNearTransition.setAction(emptyAction);
 	humanNearTransition.setCondition(humanIsNear);
 	
+	var humanFarTransition = new Transition();
+	humanFarTransition.setTargetState(followState);
+	humanFarTransition.setAction(emptyAction);
+	humanFarTransition.setCondition(humanIsFar);
+	
 	//Transition Lists
 	var followTransitions = new Array();
 	var hungerTransitions = new Array();
@@ -111,6 +129,8 @@ function Zombie(position, velocity) {
 	
 	hungerTransitions.push(satedTransition);
 	hungerTransitions.push(humanNearTransition);
+	
+	chasingTransitions.push(humanFarTransition);
 	
 	//TODO: chasing transitions
 	
