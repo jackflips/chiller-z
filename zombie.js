@@ -2,7 +2,8 @@ const maxMaxSpeed = 5.0;
 const maxHunger = 1000;
 const hungerSlowFactor = .005;
 const hungerTransitionLevel = 400;
-const zombieInertia = 5;
+const zombieInertia = 10;
+const humanProximityStartChase = 200;
 
 //TODO: add logic for feeding state
 function Zombie(position, velocity) {
@@ -32,8 +33,14 @@ function Zombie(position, velocity) {
 	
 	var humanIsNear = new Condition();
 	humanIsNear.test = function() {
-		return false
-		//HUMANS_TODO
+		for(human : game.humans)
+		{
+			if(euclideanDistance(thisZombie.position, game.humans[human].position) < humanProximityStartChase)
+			{
+				return true;
+			}
+		}
+		return false;
 	};
 	
 	//Actions
@@ -52,7 +59,11 @@ function Zombie(position, velocity) {
 	};
 	var chase = function()
 	{
-		//HUMANS_TODO
+		var quarry = findClosest(thisZombie, game.humans);
+		var toSteer = steering.pursue(thisZombie, quarry).add(steering.separate(thisZombie, game.player, game.zombies));
+		toSteer = toSteer.truncate(thisZombie.maxSpeed);
+		toSteer = toSteer.divide(zombieInertia);
+		thisZombie.velocity = (thisZombie.velocity.add(toSteer)).truncate(thisZombie.maxSpeed);
 	};
 	
 	var emptyAction = function() {};
