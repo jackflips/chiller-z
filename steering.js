@@ -1,5 +1,8 @@
 (function() {
 
+	const tail = 80;
+	const seperationDistance = 80;
+	
     function followLeader(agent, leader, horde) {
         var force = seek(agent, leader).add(separate(agent, leader, horde));
         //*/var force = seek(agent, leader)
@@ -16,7 +19,7 @@
 			//if leader is moving, move to a point behind
 			var tv = leader.velocity.negative();
 			tv = tv.unit();
-			tv = tv.multiply(70); //70 is tail constant
+			tv = tv.multiply(tail); //70 is tail constant
 			target = leader.position.add(tv);
 		}
 		else
@@ -33,25 +36,22 @@
         var force = new Vector(0, 0);
         var neighborCount = 0;
 
-		//consts
-		const maxDist = 70;
-
 		{
 			var dist = euclideanDistance(agent.position, leader.position)
-			if (dist < maxDist)
+			if (dist < seperationDistance)
 			{
 				var diff = leader.position.subtract(agent.position);
-				force = diff.unit().multiply(maxDist);
+				force = diff.unit().multiply(seperationDistance);
 				neighborCount++;
 			}
 		}
 		for (member in horde) {
             if (horde[member] != agent) {
 				var dist = euclideanDistance(agent.position, horde[member].position)
-				if (dist < maxDist)
+				if (dist < seperationDistance)
 				{
 					var diff = horde[member].position.subtract(agent.position);
-					force = force.add(diff.unit().multiply(maxDist));
+					force = force.add(diff.unit().multiply(seperationDistance));
 					neighborCount++;
 				}
             }
@@ -59,13 +59,13 @@
         if (neighborCount == 0)
             return force;
 
-		force = force.divide(neighborCount);
+		//force = force.divide(neighborCount);
         return force.negative();
     }
 
 	function wander(agent)
 	{
-		//TODO
+		//var prevDirection = 
 	}
 	
 	function evade(agent, pursuer)
