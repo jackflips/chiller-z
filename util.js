@@ -20,7 +20,7 @@ function findClosest(closestTo, list)
 	var minDistance = 52560000;
 	var ownPosition = closestTo.position;
 	var closest;
-	for(agent : list)
+	for(agent in list)
 	{
 		var dist = euclideanDistance(ownPosition, list[agent].position);
 		if(dist < minDistance)

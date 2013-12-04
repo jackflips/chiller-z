@@ -2,12 +2,9 @@ const maxMaxSpeed = 5.0;
 const maxHunger = 1000;
 const hungerSlowFactor = .005;
 const hungerTransitionLevel = 400;
-<<<<<<< HEAD
 const zombieInertia = 10;
 const humanProximityStartChase = 200;
-=======
-const zombieInertia = 8;
->>>>>>> 977963147773a018ca99a528f55e7917e8c61505
+
 
 //TODO: add logic for feeding state
 function Zombie(position, velocity) {
@@ -37,7 +34,7 @@ function Zombie(position, velocity) {
 	
 	var humanIsNear = new Condition();
 	humanIsNear.test = function() {
-		for(human : game.humans)
+		for(human in game.humans)
 		{
 			if(euclideanDistance(thisZombie.position, game.humans[human].position) < humanProximityStartChase)
 			{
