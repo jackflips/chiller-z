@@ -145,10 +145,10 @@ Sprite.prototype.staticRender = function(ctx) {
 		this.pos[0] = (-this.size[0]/2) / game.zoomLevel;
 		this.pos[1] = (-this.size[1]/2) / game.zoomLevel;
 		this._staticRender(ctx);
-		game.context.restore();
     } else {
 	    this._staticRender(ctx);
 	}
+	game.context.restore();
 }
 
 Sprite.prototype._staticRender = function(ctx) {
@@ -286,7 +286,7 @@ $(function() { //jquery loaded
 	for (i=0; i<7; i++) {
     	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
-	game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
+	//game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
     resources.load([
     	'images/grass.png',
     	'images/dirt.png',
