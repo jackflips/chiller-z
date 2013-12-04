@@ -28,7 +28,7 @@ function Player() {
 	this.health = 100;
 	this.position;
 	this.velocity = new Vector(0, 0);
-	this.size = 75;
+	this.size = 97;
 }
 
 function euclideanDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
@@ -197,7 +197,7 @@ function draw() {
 	//---------------
 	//draw necromancer
 	var necroDirection = Math.atan2(game.targetOffset.y, game.targetOffset.x);
-	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 37.5, game.canvas.height/2 - 37.5], [75, 75], necroDirection, false, true));
+	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 37.5, game.canvas.height/2 - 37.5], [97, 97], necroDirection, false, true));
 
 	//draw zombies
 	for (zombie in game.zombies) {
@@ -205,7 +205,7 @@ function draw() {
 			var prevPos = zombiePos;
 			var zombiePos = new Point(game.zombies[zombie].position.x - game.center.x, game.zombies[zombie].position.y - game.center.y);
 			var zombieDir = Math.atan2(game.zombies[zombie].velocity.y, game.zombies[zombie].velocity.x);
-			sprites.push(new Sprite("zombie1.png", [zombiePos.x / game.zoomLevel, zombiePos.y / game.zoomLevel], [50, 50], zombieDir, true, true));
+			sprites.push(new Sprite("zombie1.png", [zombiePos.x / game.zoomLevel, zombiePos.y / game.zoomLevel], [65, 65], zombieDir, true, true));
 		}
 	}
 	
@@ -215,7 +215,7 @@ function draw() {
 			var lastPos = humanPos;
 			var humanPos = new Point(game.humans[human].position.x - game.center.x, game.humans[human].position.y - game.center.y);
 			var humanDir = Math.atan2(game.humans[human].velocity.y, game.humans[human].velocity.x);
-			sprites.push(new Sprite("pikachu.gif", [humanPos.x, humanPos.y], [80, 80], humanDir, true));
+			sprites.push(new Sprite("human.png", [humanPos.x, humanPos.y], [80, 80], humanDir, true));
 			}
 	}
 	
@@ -262,7 +262,7 @@ $(function() { //jquery loaded
 	for (i=0; i<25; i++) {
     	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
-	//game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
+	game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
     resources.load([
     	'grass.png',
     	'dirt.png',
@@ -270,7 +270,7 @@ $(function() { //jquery loaded
     	'zombie1.png',
 		'rock.jpg',
 		'necromancer.png',
-		'pikachu.gif'
+		'human.png'
    	]);
     resources.onReady(animate);
     bindKeys();
