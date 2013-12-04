@@ -91,21 +91,20 @@ function generateMap() {
 	
 	var directions = {up: new Vector(0,-1), down: new Vector(0,1), left: new Vector(-1,0), right: new Vector(1,0)};
 	var last = directions.down;
-	
 	var start = map[0][(Math.random()*400)-200];
 	var index = new Vector(0, start);
 	console.log(index + ": " + index.x + ", " + index.y);
 	while (index.x > -200 && index.x < 200 && index.y > -200  && index.y < 200) {
 		chance = Math.random();
-		if (chance > .5 && last != directions.up) {
+		if (chance < .4 && last != directions.up) {
 			index = index.add(directions.down);
 			map[index.x][index.y] = 2;
 			last = directions.down;
-		} else if (chance < .7 && last != directions.right) {
+		} else if (chance < .6 && last != directions.right) {
 			index = index.add(directions.left);
 			map[index.x][index.y] = 2;
 			last = directions.left;
-		} else if (chance < .9 && last != directions.left) {
+		} else if (chance < .8 && last != directions.left) {
 			index = index.add(directions.right);
 			map[index.x][index.y] = 2;
 			last = directions.right;
@@ -217,7 +216,7 @@ function draw() {
 	}
 
 	//game.zoomLevel = 1 + (.02 * game.zombies.length);
-	game.zoomLevel = 1;
+	game.zoomLevel = 2;
 
 	//now draw
 	//--------
