@@ -5,7 +5,7 @@ var debugCounter = 0;
 
 var g = 0;
 
-var MOVEMENT_RATE = 4;
+var MOVEMENT_RATE = 20;
 
 function Point(x, y) {
 	return new Vector(x, y);
@@ -78,7 +78,6 @@ function generateMap() {
 	var last = directions.down;
 	var start = map[0][(Math.random()*400)-200];
 	var index = new Vector(0, start);
-	console.log(index + ": " + index.x + ", " + index.y);
 	while (index.x > -200 && index.x < 200 && index.y > -200  && index.y < 200) {
 		chance = Math.random();
 		if (chance < .4 && last != directions.up) {
@@ -201,7 +200,7 @@ function draw() {
 	}
 
 	//game.zoomLevel = 1 + (.02 * game.zombies.length);
-	game.zoomLevel = 2;
+	game.zoomLevel = 10;
 
 	//now draw
 	//--------
@@ -240,7 +239,7 @@ function draw() {
 			var lastPos = humanPos;
 			var humanPos = new Point(game.humans[human].position.x - game.center.x, game.humans[human].position.y - game.center.y);
 			var humanDir = Math.atan2(game.humans[human].velocity.y, game.humans[human].velocity.x);
-			sprites.push(new Sprite("images/human.png", [humanPos.x, humanPos.y], [80, 80], humanDir, true));
+			sprites.push(new Sprite("images/human.png", [humanPos.x / game.zoomLevel, humanPos.y / game.zoomLevel], [80, 80], humanDir, true, true));
 		}
 	}
 	
