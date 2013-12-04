@@ -257,7 +257,7 @@ $(function() { //jquery loaded
 	for (i=0; i<5; i++) {
     	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
-	//game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
+	game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
     resources.load([
     	'grass.png',
     	'dirt.png',
