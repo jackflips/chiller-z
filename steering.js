@@ -6,10 +6,8 @@
     function followLeader(agent, leader, horde) {
         var force = seek(agent, leader).add(separate(agent, leader, horde));
         //*/var force = seek(agent, leader)
-		if (force.length() > agent.maxSpeed)
-            return force.unit().multiply(agent.maxSpeed);
-        else
-            return force;
+		force = force.truncate(agent.maxSpeed);
+        return force;
     }
 
     function seek(agent, leader) {
@@ -65,7 +63,9 @@
 
 	function wander(agent)
 	{
-		//var prevDirection = 
+		var prevDirection = toDirection(agent.velocity);
+		var outDirection = prevDirection + (Math.random() - .5) * 2;
+		return toVector(outDirection);
 	}
 	
 	function evade(agent, pursuer)
