@@ -2,6 +2,7 @@ const maxMaxSpeed = 5.0;
 const maxHunger = 1000;
 const hungerSlowFactor = .005;
 const hungerTransitionLevel = 800;
+const zombieInertia = 5;
 
 //TODO: add logic for feeding state
 function Zombie(position, velocity) {
@@ -38,7 +39,7 @@ function Zombie(position, velocity) {
 	var follow = function() 
 	{
 		var toSteer = steering.followLeader(thisZombie, game.player, game.zombies);
-		toSteer = toSteer.divide(4);
+		toSteer = toSteer.divide(zombieInertia);
 		thisZombie.velocity = thisZombie.velocity.add(toSteer).truncate(thisZombie.maxSpeed);
 	};
 	var wander = function()
