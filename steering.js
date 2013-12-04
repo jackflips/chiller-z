@@ -89,7 +89,7 @@
 			//if quarry is moving, move to a point ahead
 			//how far ahead should really vary with distance
 			//but whatever
-			var anticept = quarry.velocity();
+			var anticept = quarry.velocity;
 			anticept = anticept.multiply(anticipateFactor);
 			target = quarry.position.add(anticept);
 		}
