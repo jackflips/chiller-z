@@ -1,3 +1,6 @@
+const feedingRange = 400;
+const caughtDist = 25;
+
 function Human (position, velocity) {
 	this.maxSpeed = 2;
 	this.position = position;
@@ -8,38 +11,96 @@ function Human (position, velocity) {
 	// Conditions
 	var closeToZombie = new Condition();
 	closeToZombie.test = function() {
+		for (zombie in game.zombies){
+			if (euclideanDistance(zombie.position, this.position) < feedingRange)
+				return true;
+			return false;
+		}
+	}
+	
+	var farFromZombie = new Condition();
+	farFromZombie.test = function() {
+		for(zombie in game.zombies){
+			if (euclideanDistance(zombie.position, this.position) >= feedingRange)
+				return true;
+			return false;
+		}
 	}
 	
 	var caughtByZombie = new Condition();
 	caughtByZombie.test = function() {
+		for(zombie in game.zombies){
+			if (euclideanDistance(zombie.position, this.position) <= caughtDist)
+				return true;
+			return false;
+		}
 	}
 	
 	var timeLapse = new Condition();
 	timeLapse.test = function() {
+		var timeLeft = 4000;
+		while(timeLeft > 0){
+			timeLeft--;
+		}
+		return true;
 	}
 
 	// Actions
 	var wanderAction = function() {}
 	var runAction = function() {}
 	var beingEatenAction = function() {}
-	var deathAction = function() {}
-
-	// Transition Lists
-
+	var deathAction = function() {}	
+	var nullAction = function() {}
 
 	// States
-	var wander = new State();
-	var run = new State();
-	var beingEaten = new State();
+	var wanderState = new State();
+	wanderState.setAction(wanderAction);
+	wanderState.setEntryAction(nullAction);
+	wanderState.setExitAction(nullAction);
+	
+	var runState = new State();
+	runState.setAction(runAction);
+	runState.setEntryAction(nullAction);
+	runState.setExitAction(nullAction);
+	
+	var beingEatenState = new State();
+	beingEatenState.setAction(beingEatenAction);
+	beingEatenState.setEntryAction(nullAction);
+	beingEatenState.setExitAction(deathAction);
 
 	// Transitions
-	var zombieClose = new Transition();
-	zombieClose.setTargetState(run);
-	zombieClose.setCondition(closeToZombie);
+	var closeTrans = new Transition();
+	closeTrans.setTargetState(runState);
+	closeTrans.setAction(nullAction);
+	closeTrans.setCondition(closeToZombie);
+	
+	var farTrans = new Transition();
+	farTrans.setTargetState(wanderState);
+	farTrans.setAction(nullAction);
+	farTrans.setCondition(farFromZombie);
+	
+	var caughtTrans = new Transition();
+	caughtTrans.setTargetState(beingEatenState);
+	caughtTrans.setAction(nullAction);
+	caughtTrans.setCondition(caughtByZombie);
+	
+	// Transition Lists
+	var wanderTransitions = new Array();
+	var runTransitions = new Array();
+	var beingEatenTransitions = new Array();
+	
+	wanderTransitions.push(closeTrans);
+	
+	runTransitions.push(farTrans);
+	runTransitions.push(caughtTrans);
+	
+	wanderState.setTransitions(wanderTransitions);
+	runState.setTransitions(runTransitions);
+	beingEatenState.setTransitions(beingEatenTransitions);
 
 	// State Machine
-	var humanFSM = new StateMachine();
-	humanFSM.setCurrentState(wander);
+	this.humanFSM = new StateMachine();
+	this.humanFSM.setCurrentState(wanderState);
 }
 
 Human.prototype.update = function(game){
