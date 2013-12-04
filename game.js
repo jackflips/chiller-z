@@ -5,7 +5,7 @@ var debugCounter = 0;
 
 var g = 0;
 
-var MOVEMENT_RATE = 20;
+var MOVEMENT_RATE = 5;
 
 function Point(x, y) {
 	return new Vector(x, y);
@@ -155,10 +155,10 @@ Sprite.prototype.staticRender = function(ctx) {
 	}
     if (this.rotation) {
     	game.context.save();
-    	game.context.translate(Math.round(this.pos[0] + this.size[0]/2), Math.round(this.pos[1] + this.size[1]/2)); 
+    	game.context.translate(Math.round(this.pos[0] + this.size[0]/(2 * game.zoomLevel)), Math.round(this.pos[1] + this.size[1]/(2*game.zoomLevel))); 
 		game.context.rotate(this.rotation + 1.57079633); 
-		this.pos[0] = -this.size[0]/2;
-		this.pos[1] = -this.size[1]/2;
+		this.pos[0] = (-this.size[0]/2) / game.zoomLevel;
+		this.pos[1] = (-this.size[1]/2) / game.zoomLevel;
 		this._staticRender(ctx);
 		game.context.restore();
     } else {
@@ -215,7 +215,7 @@ function draw() {
 	}
 
 	//game.zoomLevel = 1 + (.02 * game.zombies.length);
-	game.zoomLevel = 10;
+	game.zoomLevel = 1;
 
 	//now draw
 	//--------
