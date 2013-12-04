@@ -74,10 +74,12 @@ function generateMap() {
 		}
 	}
 	
+	var river = [];
 	var directions = {up: new Vector(0,-1), down: new Vector(0,1), left: new Vector(-1,0), right: new Vector(1,0)};
 	var last = directions.down;
 	var start = map[0][(Math.random()*400)-200];
 	var index = new Vector(0, start);
+	river.push(index);
 	while (index.x > -200 && index.x < 200 && index.y > -200  && index.y < 200) {
 		chance = Math.random();
 		if (chance < .4 && last != directions.up) {
@@ -97,6 +99,21 @@ function generateMap() {
 			map[index.x][index.y] = 2;
 			last = directions.up;
 		}
+		river.push(index);
+	}
+	var bridgeCounter = 1;
+	var lastTile = new Vector(1000, 1000); //arbitrary out of scope
+	for (tile in river) {
+		var riverTile = river[tile];
+		if (riverTile.subtract(lastTile).equals(directions.down) &&
+			map[riverTile.x-1][riverTile.y] != 2 &&
+			map[riverTile.x+1][riverTile.y] != 2) {
+			if (bridgeCounter % 8 == 0) {
+				map[riverTile.x][riverTile.y] = 4;
+			}
+			bridgeCounter++;
+		}
+		lastTile = river[tile];
 	}
 	
 	return map;
@@ -122,6 +139,9 @@ function Sprite(image, pos, size, rotation, isCharacter, shouldZoom) {
 	}
 	else if (image == 3) {
 		this.image = "images/rock.jpg";
+	}
+	else if (image == 4) {
+		this.image = "images/bridge.png";
 	}
 	else {
 		this.image = image;
@@ -295,7 +315,7 @@ $(function() { //jquery loaded
 	game.player.position = game.center;
 	for (i=0; i<7; i++) {
     	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
-	}
+	} 
 	seedHumans();
     resources.load([
     	'images/grass.png',
@@ -305,7 +325,8 @@ $(function() { //jquery loaded
 		'images/rock.jpg',
 		'images/necromancer.png',
 		'images/human.png',
-		'images/ocean.png'
+		'images/ocean.png',
+		'images/bridge.png'
    	]);
     resources.onReady(animate);
     bindKeys();
