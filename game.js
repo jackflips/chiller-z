@@ -221,12 +221,12 @@ function draw() {
 	
 	//draw humans
 	for (human in game.humans) {
-		if (clip(game.humans[human].position, new Point(80, 80))) {
+		if (clip(game.humans[human].position, game.humans[human].size)) {
 			var lastPos = humanPos;
 			var humanPos = new Point(game.humans[human].position.x - game.center.x, game.humans[human].position.y - game.center.y);
 			var humanDir = Math.atan2(game.humans[human].velocity.y, game.humans[human].velocity.x);
 			sprites.push(new Sprite("images/human.png", [humanPos.x, humanPos.y], [80, 80], humanDir, true));
-			}
+		}
 	}
 	
 	for (sprite in sprites) {
