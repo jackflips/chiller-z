@@ -5,7 +5,7 @@ var debugCounter = 0;
 
 var g = 0;
 
-var MOVEMENT_RATE = 5;
+var MOVEMENT_RATE = 4;
 
 function Point(x, y) {
 	return new Vector(x, y);
@@ -182,6 +182,29 @@ Sprite.prototype._staticRender = function(ctx) {
                   this.size[0] / (this.shouldZoom ? game.zoomLevel : 1), this.size[1] / (this.shouldZoom ? game.zoomLevel : 1));
 }
 
+function requestMove(position, velocity) {
+	var newPos = position.add(velocity);
+	var newPosTile = newPos.divide(96);
+	console.log(map[Math.round(newPosTile.x)][Math.round(newPosTile.y)]);
+	if (map[Math.round(newPosTile.x)][Math.round(newPosTile.y)] =! 2) {
+		return newPos;
+	} else {
+		var allowedMovementX = function() {
+			for (i=newPos.x; i<=newPos.x + velocity.x; i++) {
+				if (i % 96 == 0) return i-newPos.x;
+			}
+			return velocity.x;
+		}();
+		var allowedMovementY = function() {
+			for (i=newPos.y; i<=newPos.y + velocity.y; i++) {
+				if (i % 96 == 0) return i-newPos.y;
+			}
+			return velocity.y;
+		}();
+		return new Vector(allowedMovementX, allowedMovementY);
+	}
+}
+
 //both draws and updates
 function draw() {
 
@@ -194,9 +217,11 @@ function draw() {
 		} else {
 			var triangleFactor = euclideanDistance(game.targetOffset) / MOVEMENT_RATE;
 			game.player.velocity = game.targetOffset.divide(triangleFactor);
-			game.center = game.center.add(game.player.velocity);
-			game.player.position.x = game.center.x - 32;
-			game.player.position.y = game.center.y - 32;
+			var move = requestMove(game.center, game.player.velocity);
+			//console.log(move);
+			game.center = game.center.add(move);
+			game.player.position.x = game.center.x - 37.5;
+			game.player.position.y = game.center.y - 37.5;
 		}
 	}
 
