@@ -1,5 +1,6 @@
 const feedingRange = 400;
 const caughtDist = 25;
+const humanInertia = 10;
 
 function Human (position, velocity) {
 	this.maxSpeed = 2;
@@ -47,7 +48,12 @@ function Human (position, velocity) {
 	}
 
 	// Actions
-	var wanderAction = function() {}
+	var wanderAction = function() {
+		var toSteer = steering.wander(thisHuman).add(steering.separate(thisHuman, game.player, game.humans));
+		toSteer = toSteer.truncate(thisHuman.maxSpeed);
+		toSteer = toSteer.divide(humanInertia);
+		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(thisHuman.maxSpeed);
+	}
 	var runAction = function() {}
 	var beingEatenAction = function() {}
 	var deathAction = function() {}	
@@ -105,5 +111,6 @@ function Human (position, velocity) {
 }
 
 Human.prototype.update = function(game){
-
+	var actions = this.humanFSM.update();
+	for (var act in actions) {actions[act]();}
 }

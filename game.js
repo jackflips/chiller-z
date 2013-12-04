@@ -227,7 +227,10 @@ function draw() {
 
 	//update positions of npcs
 	for (zombie in game.zombies) {
-			game.zombies[zombie].update(game);
+		game.zombies[zombie].update(game);
+	}
+	for (human in game.humans) {
+		game.humans[human].update(game);
 	}
 
 	//update position of zombies per frame based on velocity vector
@@ -303,9 +306,10 @@ function draw() {
 function seedHumans() {
 	var humX;
 	var humY;
-	for(var a = 0; a < 1500; a++){
-		humX = (Math.random()*(2*19200) - 19200);
-		humY = (Math.random()*(2*19200) - 19200);
+	for(var a = 0; a < 20; a++){
+		//whole map = 19200 x 19200
+		humX = (Math.random()*(2*2000) - 2000);
+		humY = (Math.random()*(2*2000) - 2000);
 		game.humans.push(new Human(new Point(humX, humY), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
 }

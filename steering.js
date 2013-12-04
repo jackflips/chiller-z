@@ -88,7 +88,6 @@
 	{
 		var target;
 		target = scarything.position;
-		
 		target = target.subtract(agent.position);
 		target = target.unit().multiply(agent.maxSpeed );
 		target = target.negative();
