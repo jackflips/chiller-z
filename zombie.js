@@ -10,6 +10,7 @@ function Zombie(position, velocity) {
 	this.maxSpeed = 3.5;
 	this.position = position;
 	this.velocity = velocity;
+	this.size = 50;
 	
 	var thisZombie = this;
 	

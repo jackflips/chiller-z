@@ -21,13 +21,14 @@ function Game() {
 	this.zombies = [];
 	this.humans = [];
 	this.player;
+	this.zoomLevel = 1;
 }
 
 function Player() {
 	this.health = 100;
 	this.position;
 	this.velocity = new Vector(0, 0);
-	this.size = new Point(75, 75);
+	this.size = 75;
 }
 
 function euclideanDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
@@ -38,10 +39,10 @@ function euclideanDistance(point1, point2) { //returns distance between 2 points
 }
 
 function clip(point, size) {
-	if (point.x > game.center.x - game.canvas.width/2 - size.x &&
-		point.x < game.center.x + game.canvas.width/2 &&
-		point.y > game.center.y - game.canvas.height/2 - size.y &&
-		point.y < game.center.y + game.canvas.height/2)
+	if (point.x > game.center.x - (game.canvas.width/2 + size)*game.zoomLevel &&
+		point.x < game.center.x + (game.canvas.width/2)*game.zoomLevel &&
+		point.y > game.center.y - (game.canvas.height/2 + size)*game.zoomLevel &&
+		point.y < game.center.y + (game.canvas.height/2)*game.zoomLevel)
 		return true;
 	return false;
 }
@@ -86,7 +87,7 @@ function animate() {
     draw();
 }
 
-function Sprite(image, pos, size, rotation, isCharacter) {
+function Sprite(image, pos, size, rotation, isCharacter, shouldZoom) {
 	if (debugCounter % 100 == 0) {
 	}
 	if (image == 0) {
@@ -105,6 +106,7 @@ function Sprite(image, pos, size, rotation, isCharacter) {
     this.size = size;
     this.rotation = rotation;
     this.isCharacter = isCharacter;
+    this.shouldZoom = shouldZoom;
 }
 
 Sprite.prototype.staticRender = function(ctx) {
@@ -133,7 +135,7 @@ Sprite.prototype._staticRender = function(ctx) {
                   0, 0,
                   this.size[0], this.size[1],
                   x, y,
-                  this.size[0], this.size[1]);
+                  this.size[0] / (this.shouldZoom ? game.zoomLevel : 1), this.size[1] / (this.shouldZoom ? game.zoomLevel : 1));
 }
 
 //both draws and updates
@@ -173,17 +175,21 @@ function draw() {
 		thisHuman.position.y += thisHuman.velocity.y;
 	}
 
+	game.zoomLevel = 1 + (.02 * game.zombies.length);
+	//game.zoomLevel = 1;
+
 	//now draw
 	//--------
 
 	//draw world
 	sprites.length = 0;
+	var tileWidth = 96 / game.zoomLevel;
 	var firstRowToDraw = Math.floor(game.center.x / 96);
 	var firstColToDraw = Math.floor(game.center.y / 96);
 
-	for (i=firstRowToDraw; i<firstRowToDraw + Math.ceil(game.canvas.width / 96) + 1; i++) {
-		for (j=firstColToDraw; j<firstColToDraw + Math.ceil(game.canvas.height / 96) + 1; j++) {
-			sprites.push(new Sprite(game.map[i][j], [i*96 - game.center.x, j*96 - game.center.y], [96, 96]));
+	for (i=firstRowToDraw; i<firstRowToDraw + Math.ceil(game.canvas.width / tileWidth) + 1; i++) {
+		for (j=firstColToDraw; j<firstColToDraw + Math.ceil(game.canvas.height / tileWidth) + 1; j++) {
+			sprites.push(new Sprite(game.map[i][j], [(i*96 - game.center.x) / game.zoomLevel, (j*96 - game.center.y) / game.zoomLevel], [96, 96], false, false, true));
 		}
 	}
 
@@ -191,17 +197,16 @@ function draw() {
 	//---------------
 	//draw necromancer
 	var necroDirection = Math.atan2(game.targetOffset.y, game.targetOffset.x);
-	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 32, game.canvas.height/2 - 32], [75, 75], necroDirection));
+	sprites.push(new Sprite("necromancer.png", [game.canvas.width/2 - 37.5, game.canvas.height/2 - 37.5], [75, 75], necroDirection, false, true));
 
 	//draw zombies
 	for (zombie in game.zombies) {
-		if (clip(game.zombies[zombie].position, new Point(50, 50))) {
+		if (clip(game.zombies[zombie].position, game.zombies[zombie].size)) {
 			var prevPos = zombiePos;
 			var zombiePos = new Point(game.zombies[zombie].position.x - game.center.x, game.zombies[zombie].position.y - game.center.y);
 			var zombieDir = Math.atan2(game.zombies[zombie].velocity.y, game.zombies[zombie].velocity.x);
-			sprites.push(new Sprite("zombie1.png", [zombiePos.x, zombiePos.y], [50, 50], zombieDir, true));
-			//console.log("Zombie["+zombie+"]: direction "+zombieDir);
-			}
+			sprites.push(new Sprite("zombie1.png", [zombiePos.x / game.zoomLevel, zombiePos.y / game.zoomLevel], [50, 50], zombieDir, true, true));
+		}
 	}
 	
 	//draw humans
@@ -254,7 +259,7 @@ $(function() { //jquery loaded
 	game.context = game.canvas.getContext('2d');
 	game.player = new Player();
 	game.player.position = game.center;
-	for (i=0; i<5; i++) {
+	for (i=0; i<25; i++) {
     	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
 	//game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
