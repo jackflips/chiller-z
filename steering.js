@@ -2,6 +2,7 @@
 
 	const tail = 80;
 	const seperationDistance = 80;
+	const anticipateFactor = 3;
 	
     function followLeader(agent, leader, horde) {
         var force = seek(agent, leader).add(separate(agent, leader, horde));
@@ -82,7 +83,24 @@
 	
 	function pursue(agent, quarry)
 	{
-		//TODO
+		var target;
+		if(quarry.velocity.length() != 0)
+		{
+			//if quarry is moving, move to a point ahead
+			//how far ahead should really vary with distance
+			//but whatever
+			var anticept = quarry.velocity();
+			anticept = anticept.multiply(anticipateFactor);
+			target = quarry.position.add(anticept);
+		}
+		else
+		{
+			//otherwise, move to the quarry's position
+			target = quarry.position;
+		}
+		target = target.subtract(agent.position);
+		target.truncate(agent.maxSpeed * 2);
+		return target.divide(2);
 	}
 	
     window.steering = {

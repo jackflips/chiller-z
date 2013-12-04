@@ -31,22 +31,7 @@ function Player() {
 	this.size = 97;
 }
 
-function euclideanDistance(point1, point2) { //returns distance between 2 points or hypoteneuse of 1 point
-	if (point2)
-		return (Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2)));
-	else
-		return Math.sqrt(Math.pow(point1.x, 2) + Math.pow(point1.y, 2));
-}
 
-function toDirection(vector)  //returns angle in radians of the given vector from 0,0
-{
-	return Math.atan2(vector.y, vector.x);
-}
-
-function toVector(direction)  //returns a unit vector pointing in the specified angle in radians from 0,0
-{
-	return new Vector(Math.cos(direction), Math.sin(direction));
-}
 
 function clip(point, size) {
 	if (point.x > game.center.x - (game.canvas.width/2 + size)*game.zoomLevel &&
