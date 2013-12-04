@@ -255,6 +255,16 @@ function draw() {
 	debugCounter++;
 }
 
+function seedHumans() {
+	var humX;
+	var humY;
+	for(var a = 0; a < 1500; a++){
+		humX = (Math.random()*(2*19200) - 19200);
+		humY = (Math.random()*(2*19200) - 19200);
+		game.humans.push(new Human(new Point(humX, humY), new Vector(Math.sqrt(2), Math.sqrt(2))));
+	}
+}
+
 function bindKeys() {
 
 	$('#canvas').on('contextmenu',function() {
@@ -286,7 +296,7 @@ $(function() { //jquery loaded
 	for (i=0; i<7; i++) {
     	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
-	//game.humans.push(new Human(new Point(50, 50), new Vector(0,0)));
+	seedHumans();
     resources.load([
     	'images/grass.png',
     	'images/dirt.png',
