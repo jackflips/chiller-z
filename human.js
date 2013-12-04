@@ -13,7 +13,7 @@ function Human (position, velocity) {
 	var closeToZombie = new Condition();
 	closeToZombie.test = function() {
 		for (zombie in game.zombies){
-			if (euclideanDistance(zombie.position, this.position) < feedingRange)
+			if (euclideanDistance(thisHuman.position, game.zombies[zombie].position) < feedingRange)
 				return true;
 			return false;
 		}
@@ -22,7 +22,7 @@ function Human (position, velocity) {
 	var farFromZombie = new Condition();
 	farFromZombie.test = function() {
 		for(zombie in game.zombies){
-			if (euclideanDistance(zombie.position, this.position) >= feedingRange)
+			if (euclideanDistance(thisHuman.position, game.zombies[zombie].position) >= feedingRange)
 				return true;
 			return false;
 		}
@@ -31,7 +31,7 @@ function Human (position, velocity) {
 	var caughtByZombie = new Condition();
 	caughtByZombie.test = function() {
 		for(zombie in game.zombies){
-			if (euclideanDistance(zombie.position, this.position) <= caughtDist)
+			if (euclideanDistance(thisHuman.position, game.zombies[zombie].position) <= caughtDist)
 				return true;
 			return false;
 		}
