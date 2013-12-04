@@ -210,7 +210,7 @@ function draw() {
 			var lastPos = humanPos;
 			var humanPos = new Point(game.humans[human].position.x - game.center.x, game.humans[human].position.y - game.center.y);
 			var humanDir = Math.atan2(game.humans[human].velocity.y, game.humans[human].velocity.x);
-			sprites.push(new Sprite("pikachu.gif", [humanPos.x, humanPos.y], [80, 80], humanDir, true));
+			sprites.push(new Sprite("human.png", [humanPos.x, humanPos.y], [80, 80], humanDir, true));
 			}
 	}
 	
@@ -265,7 +265,7 @@ $(function() { //jquery loaded
     	'zombie1.png',
 		'rock.jpg',
 		'necromancer.png',
-		'pikachu.gif'
+		'human.png'
    	]);
     resources.onReady(animate);
     bindKeys();
