@@ -59,7 +59,7 @@ function generateMap() {
 			if ((i < -195 || i > 195) || (j < -195 || j > 195)) {
 				//outer border is mountains
 				if (Math.random() < 0.8) {
-					map[i][j] = 2;
+					map[i][j] = 3;
 				} else {
 					map[i][j] = 1;
 				}
@@ -73,6 +73,33 @@ function generateMap() {
 			}
 		}
 	}
+	
+	var directions = {up: new Vector(0,-1), down: new Vector(0,1), left: new Vector(-1,0), right: new Vector(1,0)};
+	var last = directions.down;
+	var start = map[0][(Math.random()*400)-200];
+	var index = new Vector(0, start);
+	console.log(index + ": " + index.x + ", " + index.y);
+	while (index.x > -200 && index.x < 200 && index.y > -200  && index.y < 200) {
+		chance = Math.random();
+		if (chance < .4 && last != directions.up) {
+			index = index.add(directions.down);
+			map[index.x][index.y] = 2;
+			last = directions.down;
+		} else if (chance < .6 && last != directions.right) {
+			index = index.add(directions.left);
+			map[index.x][index.y] = 2;
+			last = directions.left;
+		} else if (chance < .8 && last != directions.left) {
+			index = index.add(directions.right);
+			map[index.x][index.y] = 2;
+			last = directions.right;
+		} else if (last != directions.down) {
+			index = index.add(directions.up);
+			map[index.x][index.y] = 2;
+			last = directions.up;
+		}
+	}
+	
 	return map;
 }
 
@@ -92,6 +119,9 @@ function Sprite(image, pos, size, rotation, isCharacter, shouldZoom) {
 		this.image = "images/dirt.png";
 	}
 	else if (image == 2) {
+		this.image = "images/ocean.png";
+	}
+	else if (image == 3) {
 		this.image = "images/rock.jpg";
 	}
 	else {
@@ -171,7 +201,7 @@ function draw() {
 	}
 
 	//game.zoomLevel = 1 + (.02 * game.zombies.length);
-	game.zoomLevel = 1;
+	game.zoomLevel = 2;
 
 	//now draw
 	//--------
@@ -206,12 +236,12 @@ function draw() {
 	
 	//draw humans
 	for (human in game.humans) {
-		if (clip(game.humans[human].position, new Point(80, 80))) {
+		if (clip(game.humans[human].position, game.humans[human].size)) {
 			var lastPos = humanPos;
 			var humanPos = new Point(game.humans[human].position.x - game.center.x, game.humans[human].position.y - game.center.y);
 			var humanDir = Math.atan2(game.humans[human].velocity.y, game.humans[human].velocity.x);
 			sprites.push(new Sprite("images/human.png", [humanPos.x, humanPos.y], [80, 80], humanDir, true));
-			}
+		}
 	}
 	
 	for (sprite in sprites) {
@@ -265,7 +295,8 @@ $(function() { //jquery loaded
     	'images/zombie1.png',
 		'images/rock.jpg',
 		'images/necromancer.png',
-		'images/human.png'
+		'images/human.png',
+		'images/ocean.png'
    	]);
     resources.onReady(animate);
     bindKeys();

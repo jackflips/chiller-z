@@ -2,8 +2,12 @@ const maxMaxSpeed = 5.0;
 const maxHunger = 1000;
 const hungerSlowFactor = .005;
 const hungerTransitionLevel = 400;
+<<<<<<< HEAD
 const zombieInertia = 10;
 const humanProximityStartChase = 200;
+=======
+const zombieInertia = 8;
+>>>>>>> 977963147773a018ca99a528f55e7917e8c61505
 
 //TODO: add logic for feeding state
 function Zombie(position, velocity) {

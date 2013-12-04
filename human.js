@@ -5,6 +5,7 @@ function Human (position, velocity) {
 	this.maxSpeed = 2;
 	this.position = position;
 	this.velocity = velocity;
+	this.size = 65;
 	
 	var thisHuman = this;
 
