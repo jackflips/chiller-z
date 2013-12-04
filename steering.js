@@ -1,17 +1,20 @@
 (function() {
 
-	const tail = 80;
-	const seperationDistance = 80;
+	const tail = 80;				//distance of tail behind leader
+	const tailFalloffFactor = 10;
+	const seperationDistance = 100;
 	const anticipateFactor = 3;
+	const evadeFrameSeek = 10;
+	const evadeSideMagnitude = 100;
 	
     function followLeader(agent, leader, horde) {
-        var force = seek(agent, leader).add(separate(agent, leader, horde));
+        var force = follow(agent, leader).add(separate(agent, leader, horde));
         //*/var force = seek(agent, leader)
 		force = force.truncate(agent.maxSpeed);
         return force;
     }
 
-    function seek(agent, leader) {
+    function follow(agent, leader) {
 		var target;
 		if(leader.velocity.length() != 0)
 		{
@@ -27,8 +30,8 @@
 			target = leader.position;
 		}
 		target = target.subtract(agent.position);
-		target.truncate(agent.maxSpeed * 2);
-		return target.divide(2);
+		target.truncate(agent.maxSpeed * tailFalloffFactor);
+		return target.divide(tailFalloffFactor);
     }
 
     function separate(agent, leader, horde) {
@@ -69,9 +72,47 @@
 		return toVector(outDirection);
 	}
 	
+	//combines evade with flee, runs over an array
+	function runAway(agent, horde)
+	{
+		var force = new Vector(0,0);
+		for(pursuer in horde)
+		{
+			force = force.add(flee(agent, horde[pursuer]));
+			force = force.add(evade(agent, horde[pursuer]));
+		}
+		force.truncate(agent.maxSpeed);
+	}
+	
+	function flee(agent, scarything)
+	{
+		var target;
+		target = scarything.position;
+		
+		target = target.subtract(agent.position);
+		target = target.unit().multiply(agent.maxSpeed );
+		target = target.negative();
+		return target;
+	}
+	
 	function evade(agent, pursuer)
 	{
-		//TODO
+		var projection = pursuer.velocity.unit().multiply(agent.velocity.dot(pursuer.velocity.unit()));
+		if((projection.x > 0 && pursuer.velocity.x > 0)
+		    || (projection.x < 0 && pursuer.velocity.x < 0))
+		{
+			if(projection.length() < pursuer.velocity.lenghth * evadeFrameSeek)
+			{
+				var rejection = agent.velocity.subtract(projection);
+				if(rejection.length() < evadeSideMagnitude)
+				{
+					var magnitude = evadeSideMagnitude - rejection.length();
+					return rejection.unit().multiply(magnitude);
+				}
+			}
+		}
+		
+		return new Vector(0,0);
 	}
 	
 	//not sure if method signature correct
@@ -105,10 +146,12 @@
 	
     window.steering = {
         followLeader: followLeader,
-        seek: seek,
+        follow: follow,
         separate: separate,
 		wander: wander,
 		evade: evade,
-		pursue: pursue
+		pursue: pursue,
+		runAway: runAway,
+		flee: flee
     }
 })();
