@@ -309,10 +309,10 @@ function draw() {
 function seedHumans() {
 	var humX;
 	var humY;
-	for(var a = 0; a < 20; a++){
+	for(var a = 0; a < 100; a++){
 		//whole map = 19200 x 19200
-		humX = (Math.random()*(2*2000) - 2000);
-		humY = (Math.random()*(2*2000) - 2000);
+		humX = (Math.random()*(2*4000) - 4000);
+		humY = (Math.random()*(2*4000) - 4000);
 		game.humans.push(new Human(new Point(humX, humY), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	}
 }
