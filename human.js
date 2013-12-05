@@ -1,5 +1,5 @@
 const feedingRange = 150;
-const caughtDist = 5;
+const caughtDist = 20;
 const humanInertia = 10;
 
 function Human (position, velocity) {
@@ -7,6 +7,8 @@ function Human (position, velocity) {
 	this.position = position;
 	this.velocity = velocity;
 	this.size = 65;
+	this.counter = 1000;
+	this.status = 'live';
 	
 	var thisHuman = this;
 
@@ -34,8 +36,8 @@ function Human (position, velocity) {
 		for(zombie in game.zombies){
 			if (euclideanDistance(thisHuman.position, game.zombies[zombie].position) <= caughtDist)
 				return true;
-			return false;
-		}
+			}
+		return false;
 	}
 	
 	var timeLapse = new Condition();
@@ -62,11 +64,15 @@ function Human (position, velocity) {
 		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(thisHuman.maxSpeed);
 	}
 	var beingEatenAction = function() {
-		var counter = 10000;
-		while (counter > 0) { counter--; }
 		thisHuman.velocity = (0,0);
+		while (thisHuman.counter > 0) { counter--; }
 	}
-	var deathAction = function() {}	
+	var deathAction = function() {
+		thisHuman.status = 'dead';
+		/*var zombX = thisHuman.x;
+		var zombY = thisHuman.y;
+		game.zombies.push(new Zombie(new Point(zombX, zombY), new Vector(Math.sqrt(2), Math.sqrt(2))));*/
+	}	
 	var nullAction = function() {}
 
 	// States
