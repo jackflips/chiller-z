@@ -81,7 +81,7 @@
 			force = force.add(flee(agent, horde[pursuer]));
 			force = force.add(evade(agent, horde[pursuer]));
 		}
-		force.truncate(agent.maxSpeed);
+		return force.truncate(agent.maxSpeed);
 	}
 	
 	function flee(agent, scarything)
