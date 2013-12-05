@@ -5,7 +5,8 @@ const hungerTransitionLevel = 8000;
 const zombieInertia = 10;
 const humanProximityStartChase = 500;
 const humanProximityEndChase = 700;
-
+const feedAmountPerFrame = 20;
+//caughtDist is in human.js
 
 //TODO: add logic for feeding state
 function Zombie(position, velocity) {
@@ -57,18 +58,6 @@ function Zombie(position, velocity) {
 		return true;
 	};
 	
-	var caughtHuman = new Condition();
-	caughtHuman.test = function() {
-		for(human in game.humans)
-		{
-			if(euclideanDistance(thisZombie.position, game.humans[human].position) < caughtDist)
-			{
-				return true;
-			}
-		}
-		return false;
-	};
-	
 	//Actions
 	var follow = function() 
 	{
@@ -90,6 +79,12 @@ function Zombie(position, velocity) {
 		toSteer = toSteer.truncate(thisZombie.maxSpeed);
 		toSteer = toSteer.divide(zombieInertia);
 		thisZombie.velocity = (thisZombie.velocity.add(toSteer)).truncate(thisZombie.maxSpeed);
+		
+		//also eat
+		if(euclideanDistance(thisZombie.position, quarry.position) < caughtDist)
+		{
+			hunger = hunger - feedAmountPerFrame;
+		}
 	};
 	
 	var emptyAction = function() {};
@@ -109,7 +104,7 @@ function Zombie(position, velocity) {
 	chasingState.setAction(chase);
 	chasingState.setEntryAction(emptyAction);
 	chasingState.setExitAction(emptyAction);
-
+	
 	//Transitions
 	var hungryTransition = new Transition();
 	hungryTransition.setTargetState(hungerState);
