@@ -1,5 +1,5 @@
-const feedingRange = 150;
-const caughtDist = 20;
+const feedingRange = 400;
+const caughtDist = 70;
 const humanInertia = 10;
 
 function Human (position, velocity) {
@@ -7,7 +7,7 @@ function Human (position, velocity) {
 	this.position = position;
 	this.velocity = velocity;
 	this.size = 65;
-	this.counter = 1000;
+	this.counter = 500;
 	this.status = 'live';
 	
 	var thisHuman = this;
@@ -40,13 +40,12 @@ function Human (position, velocity) {
 		return false;
 	}
 	
-	var timeLapse = new Condition();
-	timeLapse.test = function() {
-		var timeLeft = 4000;
-		while(timeLeft > 0){
-			timeLeft--;
-		}
-		return true;
+	var timeOut = new Condition();
+	timeOut.test = function() {
+		if (thisHuman.counter == 0)
+			return true;
+		else
+			return false;
 	}
 
 	// Actions
@@ -64,14 +63,17 @@ function Human (position, velocity) {
 		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(thisHuman.maxSpeed);
 	}
 	var beingEatenAction = function() {
-		thisHuman.velocity = (0,0);
-		while (thisHuman.counter > 0) { counter--; }
+		thisHuman.maxSpeed = .5;
+		var toSteer = steering.wander(thisHuman);
+		toSteer = toSteer.truncate(thisHuman.maxSpeed);
+		toSteer = toSteer.divide(humanInertia);
+		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(thisHuman.maxSpeed);
+		thisHuman.counter--;
 	}
 	var deathAction = function() {
+		game.zombies.push(new Zombie(thisHuman.position, new Vector(Math.sqrt(2), Math.sqrt(2))));
 		thisHuman.status = 'dead';
-		/*var zombX = thisHuman.x;
-		var zombY = thisHuman.y;
-		game.zombies.push(new Zombie(new Point(zombX, zombY), new Vector(Math.sqrt(2), Math.sqrt(2))));*/
+
 	}	
 	var nullAction = function() {}
 
@@ -90,6 +92,11 @@ function Human (position, velocity) {
 	beingEatenState.setAction(beingEatenAction);
 	beingEatenState.setEntryAction(nullAction);
 	beingEatenState.setExitAction(deathAction);
+	
+	var deadState = new State();
+	deadState.setAction(nullAction);
+	deadState.setEntryAction(nullAction);
+	deadState.setExitAction(nullAction);
 
 	// Transitions
 	var closeTrans = new Transition();
@@ -107,19 +114,28 @@ function Human (position, velocity) {
 	caughtTrans.setAction(nullAction);
 	caughtTrans.setCondition(caughtByZombie);
 	
+	var deadTrans = new Transition();
+	deadTrans.setTargetState(deadState);
+	deadTrans.setAction(nullAction);
+	deadTrans.setCondition(timeOut);
+	
 	// Transition Lists
 	var wanderTransitions = new Array();
 	var runTransitions = new Array();
 	var beingEatenTransitions = new Array();
+	var deadTransitions = new Array();
 	
 	wanderTransitions.push(closeTrans);
 	
 	runTransitions.push(farTrans);
 	runTransitions.push(caughtTrans);
 	
+	beingEatenTransitions.push(deadTrans);
+	
 	wanderState.setTransitions(wanderTransitions);
 	runState.setTransitions(runTransitions);
 	beingEatenState.setTransitions(beingEatenTransitions);
+	deadState.setTransitions(deadTrans);
 
 	// State Machine
 	this.humanFSM = new StateMachine();
