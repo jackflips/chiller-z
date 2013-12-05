@@ -13,7 +13,7 @@ function Zombie(position, velocity) {
 	this.target;
 	this.maxSpeed = 3.5;
 	this.position = position;
-	this.velocity = velocity;
+	this.velocity = velocity | new Vector(0,0);
 	this.size = 65;
 	
 	var thisZombie = this;
@@ -55,6 +55,11 @@ function Zombie(position, velocity) {
 			}
 		}
 		return true;
+	};
+	
+	var caughtHuman = new Condition();
+	caughtHuman.test = function() {
+		return false;
 	};
 	
 	//Actions

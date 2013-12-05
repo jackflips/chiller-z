@@ -231,6 +231,9 @@ function draw() {
 	}
 	for (human in game.humans) {
 		game.humans[human].update(game);
+		if(game.humans[human].status == "dead")
+			game.humans.splice(human, 1);
+		//not at all sure this will work
 	}
 
 	//update position of zombies per frame based on velocity vector
