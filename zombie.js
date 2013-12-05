@@ -3,8 +3,8 @@ const maxHunger = 1000;
 const hungerSlowFactor = .005;
 const hungerTransitionLevel = 800;
 const zombieInertia = 10;
-const humanProximityStartChase = 200;
-const humanProximityEndChase = 300;
+const humanProximityStartChase = 500;
+const humanProximityEndChase = 600;
 
 
 //TODO: add logic for feeding state
