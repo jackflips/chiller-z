@@ -84,6 +84,8 @@ function Zombie(position, velocity) {
 		if(euclideanDistance(thisZombie.position, quarry.position) < caughtDist)
 		{
 			thisZombie.hunger = thisZombie.hunger - feedAmountPerFrame;
+			if(thisZombie.hunger < 0)
+				thisZombie.hunger = 0;
 		}
 	};
 	
@@ -159,9 +161,10 @@ Zombie.prototype.update = function(game) {
 	for (var act in actions) {actions[act]();}
 	
 	
-	//HUMANS_TODO: remove this
 	if(this.hunger == maxHunger)
-		this.hunger = 0;
+	{
+		game.zombies.splice(game.zombies.indexOf(this), 1);
+	}
 };
 
 Zombie.prototype.drawVelocityVectors = function(){
