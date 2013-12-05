@@ -31,3 +31,13 @@ function findClosest(closestTo, list)
 	}
 	return closest;
 }
+
+function getTile(point)
+{
+	
+}
+
+function getRect(tileX, tileY)
+{
+	
+}

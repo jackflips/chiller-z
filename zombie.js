@@ -8,7 +8,6 @@ const humanProximityEndChase = 700;
 const feedAmountPerFrame = 20;
 //caughtDist is in human.js
 
-//TODO: add logic for feeding state
 function Zombie(position, velocity) {
 	this.hunger = Math.floor(Math.random() * 100);
 	this.target;
@@ -141,7 +140,7 @@ function Zombie(position, velocity) {
 	
 	chasingTransitions.push(humanFarTransition);
 	
-	//TODO: chasing transitions
+	//TODO: improve chasing transitions
 	
 	followState.setTransitions(followTransitions);
 	hungerState.setTransitions(hungerTransitions);
