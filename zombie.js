@@ -83,7 +83,7 @@ function Zombie(position, velocity) {
 		//also eat
 		if(euclideanDistance(thisZombie.position, quarry.position) < caughtDist)
 		{
-			hunger = hunger - feedAmountPerFrame;
+			thisZombie.hunger = thisZombie.hunger - feedAmountPerFrame;
 		}
 	};
 	

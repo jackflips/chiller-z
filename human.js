@@ -73,7 +73,6 @@ function Human (position, velocity) {
 	var deathAction = function() {
 		game.zombies.push(new Zombie(thisHuman.position, new Vector(Math.sqrt(2), Math.sqrt(2))));
 		thisHuman.status = 'dead';
-
 	}	
 	var nullAction = function() {}
 
