@@ -425,8 +425,9 @@ function draw() {
 		if(game.humans[human].status == "dead")
 			game.humans.splice(human, 1);
 		//not at all sure this will work
+		if (game.humans.length < 1) alert("You won!");
 	}
-
+	
 	//update position of zombies per frame based on velocity vector
 	for (zombie in game.zombies) {
 		var thisZombie = game.zombies[zombie];
