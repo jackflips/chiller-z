@@ -1,13 +1,13 @@
 const feedingRange = 400;
 const caughtDist = 70;
-const humanInertia = 10;
+const humanInertia = 50;
 
 function Human (position, velocity) {
 	this.maxSpeed = 2;
 	this.position = position;
 	this.velocity = velocity;
 	this.size = 65;
-	this.counter = 500;
+	this.counter = 250;
 	this.status = 'live';
 	
 	var thisHuman = this;
