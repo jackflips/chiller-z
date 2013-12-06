@@ -6,7 +6,8 @@
 	const anticipateFactor = 3;
 	const evadeFrameSeek = 10;
 	const evadeSideMagnitude = 100;
-	const obstacleSpaceGiven = 60;
+	const obstacleSpaceGiven = 80;
+	const offDistanceThreshold = 20;
 	const cornerForceDecrease = 3;
 	
     function followLeader(agent, leader, horde) {
@@ -131,18 +132,33 @@
 		{
 			for(var j=-1; j < 2; j++)
 			{
-				if(game.map[tile.x + i][tile.y + j] == 2 || game.map[tile.x + i][tile.y + j] > 4)
+				var check = new Vector(tile.x+1, tile.y+j);
+				if(isImpassible(check))
 				{
-					console.log("obstacle at " + i + ", " + j);
+					//console.log("obstacle at " + i + ", " + j);
 					var moreForce = new Vector(0,0);
-					console.log("distances: " + horizontalDistance(position, tile) + ", " + verticalDistance(position, tile));
-					moreForce.x = Math.max(obstacleSpaceGiven - horizontalDistance(position, tile), 0) * i * -1;
-					moreForce.y = Math.max(obstacleSpaceGiven - verticalDistance(position, tile), 0) * j * -1;
+					//console.log("distances: " + horizontalDistance(position, check) + ", " + verticalDistance(position, check));
+					if(verticalDistance(position, check) < offDistanceThreshold)
+						moreForce.x = Math.max(obstacleSpaceGiven - horizontalDistance(position, check), 0) * i * -1;
+					if(horizontalDistance(position, check) < offDistanceThreshold)
+						moreForce.y = Math.max(obstacleSpaceGiven - verticalDistance(position, check), 0) * j * -1;
+					
+					/*
 					if(moreForce.length() > obstacleSpaceGiven)
 					{
 						moreForce.truncate(obstacleSpaceGiven / cornerForceDecrease);
 					}
-					console.log("force added: " + moreForce.x + ", " + moreForce.y);
+					//*/
+					//console.log("force added: " + moreForce.x + ", " + moreForce.y);
+					if(moreForce.length() == 0)
+					{
+						//console.log("No force?  i=" + i + ", j=" + j);
+						if(i == 0 && j == 0)
+						{
+							console.log("In impassible tile!");
+						}
+					}
+					
 					force = force.add(moreForce);
 				}
 			}
@@ -151,7 +167,7 @@
 		//console.log("force = " + force.x + ", " + force.y);
 		
 		//magnitude tweaking
-		force = force.divide(obstacleSpaceGiven).multiply(agent.maxSpeed * 2);
+		force = force.divide(obstacleSpaceGiven).multiply(agent.maxSpeed * 7);
 		force.truncate(agent.maxSpeed * 1.5);
 		return force;
 	}

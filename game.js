@@ -9,7 +9,7 @@ var MOVEMENT_RATE = 4;
 
 const tileSize = 96;
 const tileOffset = -48;
-const numHumans = 100;
+const numHumans = 1;
 const numZombies = 1;
 
 function Point(x, y) {
