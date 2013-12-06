@@ -232,7 +232,7 @@ function requestMove(position, velocity) {
 	var newPos = position.add(velocity);
 	var newPosTile = newPos.divide(96);
 	//console.log(map[Math.round(newPosTile.x)][Math.round(newPosTile.y)]);
-	if (map[Math.round(newPosTile.x)][Math.round(newPosTile.y)] =! 2) {
+	if (map[Math.round(newPosTile.x)][Math.round(newPosTile.y)] !== 2) {
 		return newPos;
 	} else {
 		var allowedMovementX = function() {
@@ -263,9 +263,9 @@ function draw() {
 		} else {
 			var triangleFactor = euclideanDistance(game.targetOffset) / MOVEMENT_RATE;
 			game.player.velocity = game.targetOffset.divide(triangleFactor);
-			var move = requestMove(game.center, game.player.velocity);
+			//var move = requestMove(game.center, game.player.velocity);
 			//console.log(move);
-			game.center = game.center.add(move);
+			game.center = game.center.add(game.player.velocity);
 			game.player.position.x = game.center.x - 37.5;
 			game.player.position.y = game.center.y - 37.5;
 		}
