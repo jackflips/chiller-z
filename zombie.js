@@ -37,9 +37,11 @@ function Zombie(position, velocity) {
 	humanIsNear.test = function() {
 		for(human in game.humans)
 		{
-			if(euclideanDistance(thisZombie.position, game.humans[human].position) < humanProximityStartChase)
-			{
-				return true;
+			if (clip(game.humans[human].position, game.humans[human].size+25)) {
+				if(euclideanDistance(thisZombie.position, game.humans[human].position) < humanProximityStartChase)
+				{
+					return true;
+				}
 			}
 		}
 		return false;
@@ -49,9 +51,11 @@ function Zombie(position, velocity) {
 	humanIsFar.test = function() {
 		for(human in game.humans)
 		{
-			if(euclideanDistance(thisZombie.position, game.humans[human].position) < humanProximityEndChase)
-			{
-				return false;
+			if (clip(game.humans[human].position, game.humans[human].size+25)) {
+				if(euclideanDistance(thisZombie.position, game.humans[human].position) < humanProximityEndChase)
+				{
+					return false;
+				}
 			}
 		}
 		return true;
