@@ -9,8 +9,8 @@ var MOVEMENT_RATE = 4;
 
 const tileSize = 96;
 const tileOffset = -48;
-const numHumans = 150;
-const numZombies = 8;
+const numHumans = 100;
+const numZombies = 1;
 
 function Point(x, y) {
 	return new Vector(x, y);
@@ -213,13 +213,13 @@ function generateMap() {
 			map[riverTile.x][riverTile.y] = 16;
 		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
 				map[riverTile.x][riverTile.y+1] < 3 &&
-				map[riverTile.x-1][riverTile.y] >= 3 && 
-				map[riverTile.x+1][riverTile.y] < 3) { //water on three sides - left
+				map[riverTile.x-1][riverTile.y] < 3 && 
+				map[riverTile.x+1][riverTile.y] >= 3) { //water on three sides - left
 			map[riverTile.x][riverTile.y] = 17;
 		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
 				map[riverTile.x][riverTile.y+1] < 3 &&
-				map[riverTile.x-1][riverTile.y] < 3 && 
-				map[riverTile.x+1][riverTile.y] >= 3) { //water on three sides - right
+				map[riverTile.x-1][riverTile.y] >= 3 && 
+				map[riverTile.x+1][riverTile.y] < 3) { //water on three sides - right
 			map[riverTile.x][riverTile.y] = 18;
 		} else if (map[riverTile.x][riverTile.y-1] >= 3 &&
 				map[riverTile.x][riverTile.y+1] < 3 &&

@@ -1,6 +1,6 @@
 const feedingRange = 400;
 const caughtDist = 70;
-const humanInertia = 10;
+const humanInertia = 50;
 
 function Human (position, velocity) {
 	this.maxSpeed = 2;
