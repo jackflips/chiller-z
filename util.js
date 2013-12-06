@@ -44,9 +44,9 @@ function getTile(point)
 function getRect(tile)
 {
 	var rect = new Object();
-	rect.x1 = tile.x * tileSize;
+	rect.x1 = (tile.x * tileSize) - game.canvas.width/2 + tileOffset;
 	rect.x2 = rect.x1 + tileSize;
-	rect.y1 = tile.y * tileSize;
+	rect.y1 = (tile.y * tileSize) - game.canvas.width/2 + tileOffset;
 	rect.y2 = rect.y1 + tileSize;
 	return rect;
 }

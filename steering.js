@@ -6,7 +6,7 @@
 	const anticipateFactor = 3;
 	const evadeFrameSeek = 10;
 	const evadeSideMagnitude = 100;
-	const obstacleSpaceGiven = 80;
+	const obstacleSpaceGiven = 60;
 	
     function followLeader(agent, leader, horde) {
         var force = follow(agent, leader).add(separate(agent, leader, horde));
@@ -119,7 +119,6 @@
 	//therefore, is not in the list
 	function avoid_obstacles(agent)
 	{
-		//TODO
 		//check 8 adjacent spaces
 		var position = agent.position;
 		var tile = getTile(position)
@@ -131,21 +130,23 @@
 		{
 			for(var j=-1; j < 2; j++)
 			{
-				if(game.map[tile.x + i][tile.y + j] == 2 || game.map[tile.x + i][tile.y + j] == 3)
+				if(game.map[tile.x + i][tile.y + j] == 2 || game.map[tile.x + i][tile.y + j] > 4)
 				{
-					//console.log("obstacle at " + i + ", " + j);
+					console.log("obstacle at " + i + ", " + j);
 					var moreForce = new Vector(0,0);
-					moreForce.x = Math.max(obstacleSpaceGiven - horizontalDistance(tile, position), 0) * i * -1;
-					moreForce.y = Math.max(obstacleSpaceGiven - verticalDistance(tile, position), 0) * j * -1;
+					console.log("distances: " + horizontalDistance(position, tile) + ", " + verticalDistance(position, tile));
+					moreForce.x = Math.max(obstacleSpaceGiven - horizontalDistance(position, tile), 0) * i * -1;
+					moreForce.y = Math.max(obstacleSpaceGiven - verticalDistance(position, tile), 0) * j * -1;
+					console.log("force added: " + moreForce.x + ", " + moreForce.y);
 					force = force.add(moreForce);
 				}
 			}
 		}
 		
+		//console.log("force = " + force.x + ", " + force.y);
+		
 		//magnitude tweaking
-		force = force.divide(obstacleSpaceGiven).multiply(agent.maxSpeed);
-		
-		
+		//force = force.divide(obstacleSpaceGiven).multiply(agent.maxSpeed);
 		
 		return force;
 	}
