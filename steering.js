@@ -6,6 +6,8 @@
 	const anticipateFactor = 3;
 	const evadeFrameSeek = 10;
 	const evadeSideMagnitude = 100;
+	const obstacleSpaceGiven = 60;
+	const cornerForceDecrease = 3;
 	
     function followLeader(agent, leader, horde) {
         var force = follow(agent, leader).add(separate(agent, leader, horde));
@@ -118,7 +120,40 @@
 	//therefore, is not in the list
 	function avoid_obstacles(agent)
 	{
-		//TODO
+		//check 8 adjacent spaces
+		var position = agent.position;
+		var tile = getTile(position)
+		var force = new Vector(0,0);
+		
+		//console.log("in tile " + tile.x + ", " + tile.y);
+		
+		for(var i=-1; i < 2; i++)
+		{
+			for(var j=-1; j < 2; j++)
+			{
+				if(game.map[tile.x + i][tile.y + j] == 2 || game.map[tile.x + i][tile.y + j] > 4)
+				{
+					console.log("obstacle at " + i + ", " + j);
+					var moreForce = new Vector(0,0);
+					console.log("distances: " + horizontalDistance(position, tile) + ", " + verticalDistance(position, tile));
+					moreForce.x = Math.max(obstacleSpaceGiven - horizontalDistance(position, tile), 0) * i * -1;
+					moreForce.y = Math.max(obstacleSpaceGiven - verticalDistance(position, tile), 0) * j * -1;
+					if(moreForce.length() > obstacleSpaceGiven)
+					{
+						moreForce.truncate(obstacleSpaceGiven / cornerForceDecrease);
+					}
+					console.log("force added: " + moreForce.x + ", " + moreForce.y);
+					force = force.add(moreForce);
+				}
+			}
+		}
+		
+		//console.log("force = " + force.x + ", " + force.y);
+		
+		//magnitude tweaking
+		force = force.divide(obstacleSpaceGiven).multiply(agent.maxSpeed * 2);
+		force.truncate(agent.maxSpeed * 1.5);
+		return force;
 	}
 	
 	function pursue(agent, quarry)
@@ -139,7 +174,7 @@
 			target = quarry.position;
 		}
 		target = target.subtract(agent.position);
-		target.truncate(agent.maxSpeed * 2);
+		target = target.truncate(agent.maxSpeed * 2);
 		return target.divide(2);
 	}
 	
@@ -151,6 +186,7 @@
 		evade: evade,
 		pursue: pursue,
 		runAway: runAway,
-		flee: flee
+		flee: flee,
+		avoid: avoid_obstacles
     }
 })();
