@@ -196,13 +196,6 @@ function generateMap() {
 				map[riverTile.x-1][riverTile.y] >= 3 && 
 				map[riverTile.x+1][riverTile.y] < 3) { //right
 			map[riverTile.x][riverTile.y] = 8;
-		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
-				map[riverTile.x][riverTile.y+1] < 3 &&
-				map[riverTile.x-1][riverTile.y] < 3 && 
-				map[riverTile.x+1][riverTile.y] < 3) { //right and left
-				map[riverTile.x][riverTile.y] = 11;
-		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
-				map[riverTile.x][riverTile.y+1] >= 3 &&
 		} else if (map[riverTile.x][riverTile.y-1] >= 3 &&
 				map[riverTile.x][riverTile.y+1] >= 3 &&
 				map[riverTile.x-1][riverTile.y] < 3 && 
@@ -237,8 +230,6 @@ function generateMap() {
 			map[riverTile.x][riverTile.y] = 5;
 		}
 		if (riverTile.subtract(lastTile).equals(directions.down) &&
-			map[riverTile.x-1][riverTile.y] > 3 &&
-			map[riverTile.x+1][riverTile.y] > 3) {
 			map[riverTile.x-1][riverTile.y] < 3 &&
 			map[riverTile.x+1][riverTile.y] < 3) {
 			if (bridgeCounter % 8 == 0) {
