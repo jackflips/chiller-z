@@ -446,8 +446,10 @@ function draw() {
 	//draw world
 	sprites.length = 0;
 	var tileWidth = 96 / game.zoomLevel;
-	var firstRowToDraw = Math.floor((game.center.x) / tileWidth);
-	var firstColToDraw = Math.floor((game.center.y) / tileWidth);
+	var leftEdge = game.center.x;
+	
+	var firstRowToDraw = Math.floor((game.center.x - (game.canvas.width / 2 * (game.zoomLevel - 1))) / tileSize);
+	var firstColToDraw = Math.floor((game.center.y - (game.canvas.height / 2 * (game.zoomLevel - 1))) / tileSize);
 
 	for (i=firstRowToDraw; i<firstRowToDraw + Math.ceil((game.canvas.width / tileWidth) * game.zoomLevel) + 1; i++) {
 		for (j=firstColToDraw; j<firstColToDraw + Math.ceil(game.canvas.height / tileWidth * game.zoomLevel) + 1; j++) {
