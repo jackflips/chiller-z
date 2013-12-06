@@ -151,32 +151,78 @@ function generateMap() {
 	var lastTile = new Vector(1000, 1000); //arbitrary out of scope
 	for (tile in river) {
 		var riverTile = river[tile];
-		var up = map[riveTile.x][riverTile.y-1];
-		var down = map[riveTile.x][riverTile.y+1];
-		var left = map[riveTile.x-1][riverTile.y];
-		var right = map[riveTile.x+1][riverTile.y];
-		if (up < 3 && down >= 3 && left < 3 && right >= 3) { //top left corner tile
-			this.image = "images/riverCornerUL.png";
-		} else if (up < 3 && down >= 3 && left >= 3 && right < 3) { //top right corner
-			this.image = "images/riverCornerUR.png";
-		} else if (up >= 3 && down < 3 && left < 3 && right >= 3) { //bottom left corner
-			this.image = "images/riverCornerDL.png";
-		} else if (up >= 3 && down < 3 && left >= 3 && right < 3) { //bottom right corner
-			this.image = "images/riverCornerDR.png";
-		} else if (up < 3 && down >= 3 && left >= 3 && right >= 3) { //top is not water
-			this.image = "images/riverTop.png";
-		} else if (up >= 3 && down < 3 && left >= 3 && right >= 3) { //bottom
-			this.image = "images/riverBottom.png";
-		} else if (up >= 3 && down >= 3 && left < 3 && right >= 3) { //left
-			this.image = "images/riverLeft.png";
-		} else if (up >= 3 && down >= 3 && left >= 3 && right < 3) { //right
-			this.image = "images/riverRight.png";
-		} else if (up < 3 && down < 3 && left < 3 && right < 3) { //right and left
-			this.image = "images/riverRightAndLeft.png";
-		} else if (up < 3 && down >= 3 && left >= 3 && right >= 3) { //top and bottom
-			this.image = "images/riverTopAndBottom.png";
+		if (map[riverTile.x][riverTile.y-1] < 3 && 
+				map[riverTile.x][riverTile.y+1] >= 3 && 
+				map[riverTile.x-1][riverTile.y] < 3 && 
+				map[riverTile.x+1][riverTile.y] >= 3) { //top left corner
+			map[riverTile.x][riverTile.y] = 12;
+		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
+				map[riverTile.x][riverTile.y+1] >= 3 &&
+				map[riverTile.x-1][riverTile.y] >= 3 && 
+				map[riverTile.x+1][riverTile.y] < 3) { //top right corner
+			map[riverTile.x][riverTile.y] = 13;
+		} else if (map[riverTile.x][riverTile.y-1] >= 3 &&
+				map[riverTile.x][riverTile.y+1] < 3 && 
+				map[riverTile.x-1][riverTile.y] < 3 && 
+				map[riverTile.x+1][riverTile.y] >= 3) { //bottom left corner
+			map[riverTile.x][riverTile.y] = 14;
+		} else if (map[riverTile.x][riverTile.y-1] >= 3 &&
+				map[riverTile.x][riverTile.y+1] < 3 &&
+				map[riverTile.x-1][riverTile.y] >= 3 && 
+				map[riverTile.x+1][riverTile.y] < 3) { //bottom right corner
+			map[riverTile.x][riverTile.y] = 15;
+		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
+				map[riverTile.x][riverTile.y+1] >= 3 && 
+				map[riverTile.x-1][riverTile.y] >= 3 && 
+				map[riverTile.x+1][riverTile.y] >= 3) { //top is not water
+			map[riverTile.x][riverTile.y] = 9;
+		} else if (map[riverTile.x][riverTile.y-1] >= 3 &&
+				map[riverTile.x][riverTile.y+1] < 3 && 
+				map[riverTile.x-1][riverTile.y] >= 3 && 
+				map[riverTile.x+1][riverTile.y] >= 3) { //bottom
+			map[riverTile.x][riverTile.y] = 10;
+		} else if (map[riverTile.x][riverTile.y-1] >= 3 &&
+				map[riverTile.x][riverTile.y+1] >= 3 &&
+				map[riverTile.x-1][riverTile.y] < 3 && 
+				map[riverTile.x+1][riverTile.y] >= 3) { //left
+			map[riverTile.x][riverTile.y] = 7;
+		} else if (map[riverTile.x][riverTile.y-1] >= 3 &&
+				map[riverTile.x][riverTile.y+1] >= 3 && 
+				map[riverTile.x-1][riverTile.y] >= 3 && 
+				map[riverTile.x+1][riverTile.y] < 3) { //right
+			map[riverTile.x][riverTile.y] = 8;
+		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
+				map[riverTile.x][riverTile.y+1] < 3 &&
+				map[riverTile.x-1][riverTile.y] < 3 && 
+				map[riverTile.x+1][riverTile.y] < 3) { //right and left
+				map[riverTile.x][riverTile.y] = 11;
+		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
+				map[riverTile.x][riverTile.y+1] >= 3 &&
+				map[riverTile.x-1][riverTile.y] >= 3 && 
+				map[riverTile.x+1][riverTile.y] >= 3) { //top and bottom
+			map[riverTile.x][riverTile.y] = 6;
+		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
+				map[riverTile.x][riverTile.y+1] >= 3 &&
+				map[riverTile.x-1][riverTile.y] < 3 && 
+				map[riverTile.x+1][riverTile.y] < 3) { //water on three sides - top
+			map[riverTile.x][riverTile.y] = 16;
+		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
+				map[riverTile.x][riverTile.y+1] < 3 &&
+				map[riverTile.x-1][riverTile.y] >= 3 && 
+				map[riverTile.x+1][riverTile.y] < 3) { //water on three sides - left
+			map[riverTile.x][riverTile.y] = 17;
+		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
+				map[riverTile.x][riverTile.y+1] < 3 &&
+				map[riverTile.x-1][riverTile.y] < 3 && 
+				map[riverTile.x+1][riverTile.y] >= 3) { //water on three sides - right
+			map[riverTile.x][riverTile.y] = 18;
+		} else if (map[riverTile.x][riverTile.y-1] >= 3 &&
+				map[riverTile.x][riverTile.y+1] < 3 &&
+				map[riverTile.x-1][riverTile.y] < 3 && 
+				map[riverTile.x+1][riverTile.y] < 3) { //water on three sides - bottom
+			map[riverTile.x][riverTile.y] = 19;
 		} else { //middle of river
-			this.image = "images/riverMid.png";
+			map[riverTile.x][riverTile.y] = 5;
 		}
 		if (riverTile.subtract(lastTile).equals(directions.down) &&
 			map[riverTile.x-1][riverTile.y] > 3 &&
@@ -220,7 +266,7 @@ function Sprite(image, pos, size, rotation, isCharacter, shouldZoom) {
 		this.image = "images/riverMid.png";
 	}
 	else if (image == 6) {
-		this.image = "images/riverEnd.png";
+		this.image = "images/riverTopAndBottom.png";
 	}
 	else if (image == 7) {
 		this.image = "images/riverLeft.png";
@@ -250,7 +296,16 @@ function Sprite(image, pos, size, rotation, isCharacter, shouldZoom) {
 		this.image = "images/riverCornerDR.png";
 	}
 	else if (image == 16) {
-		this.image = "images/riverTopAndBottom.png";
+		this.image = "images/riverEndTop.png";
+	}
+	else if (image == 17) {
+		this.image = "images/riverEndLeft.png";
+	}
+	else if (image == 18) {
+		this.image = "images/riverEndRight.png";
+	}
+	else if (image == 19) {
+		this.image = "images/riverEndBottom.png";
 	}
 	else {
 		this.image = image;
@@ -476,9 +531,12 @@ $(function() { //jquery loaded
 		'images/riverCornerUR.png',
 		'images/riverCornerDL.png',
 		'images/riverCornerDR.png',
-		'images/riverEnd.png',
 		'images/riverMid.png',
-		'images/riverTopAndBottom.png'
+		'images/riverTopAndBottom.png',
+		'images/riverEndTop.png',
+		'images/riverEndLeft.png',
+		'images/riverEndRight.png',
+		'images/riverEndBottom.png',
    	]);
     resources.onReady(animate);
     bindKeys();
