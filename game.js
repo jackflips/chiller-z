@@ -157,15 +157,9 @@ function generateMap() {
 	for (tile in river) {
 		var riverTile = river[tile];
 		if (map[riverTile.x][riverTile.y-1] < 3 && 
-<<<<<<< HEAD
-				map[riverTile.x][riverTile.y+1] >= 3 && 
-				map[riverTile.x-1][riverTile.y] < 3 && 
-				map[riverTile.x+1][riverTile.y] >= 3) { //top left corner
-=======
 			map[riverTile.x][riverTile.y+1] >= 3 && 
 			map[riverTile.x-1][riverTile.y] < 3 && 
 			map[riverTile.x+1][riverTile.y] >= 3) { //top left corner
->>>>>>> origin/river-logic
 			map[riverTile.x][riverTile.y] = 12;
 		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
 				map[riverTile.x][riverTile.y+1] >= 3 &&
@@ -202,7 +196,6 @@ function generateMap() {
 				map[riverTile.x-1][riverTile.y] >= 3 && 
 				map[riverTile.x+1][riverTile.y] < 3) { //right
 			map[riverTile.x][riverTile.y] = 8;
-<<<<<<< HEAD
 		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
 				map[riverTile.x][riverTile.y+1] < 3 &&
 				map[riverTile.x-1][riverTile.y] < 3 && 
@@ -210,7 +203,6 @@ function generateMap() {
 				map[riverTile.x][riverTile.y] = 11;
 		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
 				map[riverTile.x][riverTile.y+1] >= 3 &&
-=======
 		} else if (map[riverTile.x][riverTile.y-1] >= 3 &&
 				map[riverTile.x][riverTile.y+1] >= 3 &&
 				map[riverTile.x-1][riverTile.y] < 3 && 
@@ -218,7 +210,6 @@ function generateMap() {
 			map[riverTile.x][riverTile.y] = 11;
 		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
 				map[riverTile.x][riverTile.y+1] < 3 &&
->>>>>>> origin/river-logic
 				map[riverTile.x-1][riverTile.y] >= 3 && 
 				map[riverTile.x+1][riverTile.y] >= 3) { //top and bottom
 			map[riverTile.x][riverTile.y] = 6;
@@ -246,13 +237,10 @@ function generateMap() {
 			map[riverTile.x][riverTile.y] = 5;
 		}
 		if (riverTile.subtract(lastTile).equals(directions.down) &&
-<<<<<<< HEAD
 			map[riverTile.x-1][riverTile.y] > 3 &&
 			map[riverTile.x+1][riverTile.y] > 3) {
-=======
 			map[riverTile.x-1][riverTile.y] < 3 &&
 			map[riverTile.x+1][riverTile.y] < 3) {
->>>>>>> origin/river-logic
 			if (bridgeCounter % 8 == 0) {
 				map[riverTile.x][riverTile.y] = 4;
 			}
@@ -554,10 +542,7 @@ $(function() { //jquery loaded
 		'images/riverRight.png',
 		'images/riverBottom.png',
 		'images/riverRightAndLeft.png',
-<<<<<<< HEAD
-=======
 		'images/riverCornerUL.png',
->>>>>>> origin/river-logic
 		'images/riverCornerUR.png',
 		'images/riverCornerDL.png',
 		'images/riverCornerDR.png',
