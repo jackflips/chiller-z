@@ -60,13 +60,14 @@ function Zombie(position, velocity) {
 	//Actions
 	var follow = function() 
 	{
-		var toSteer = steering.followLeader(thisZombie, game.player, game.zombies);
+		var toSteer = steering.followLeader(thisZombie, game.player, game.zombies).add(steering.avoid(thisZombie));
+		toSteer = toSteer.truncate(thisZombie.maxSpeed);
 		toSteer = toSteer.divide(zombieInertia);
 		thisZombie.velocity = thisZombie.velocity.add(toSteer).truncate(thisZombie.maxSpeed);
 	};
 	var wander = function()
 	{
-		var toSteer = steering.wander(thisZombie).add(steering.separate(thisZombie, game.player, game.zombies));
+		var toSteer = steering.wander(thisZombie).add(steering.separate(thisZombie, game.player, game.zombies)).add(steering.avoid(thisZombie));
 		toSteer = toSteer.truncate(thisZombie.maxSpeed);
 		toSteer = toSteer.divide(zombieInertia);
 		thisZombie.velocity = (thisZombie.velocity.add(toSteer)).truncate(thisZombie.maxSpeed);
@@ -74,7 +75,7 @@ function Zombie(position, velocity) {
 	var chase = function()
 	{
 		var quarry = findClosest(thisZombie, game.humans);
-		var toSteer = steering.pursue(thisZombie, quarry).add(steering.separate(thisZombie, game.player, game.zombies));
+		var toSteer = steering.pursue(thisZombie, quarry).add(steering.separate(thisZombie, game.player, game.zombies)).add(steering.avoid(thisZombie));
 		toSteer = toSteer.truncate(thisZombie.maxSpeed);
 		toSteer = toSteer.divide(zombieInertia);
 		thisZombie.velocity = (thisZombie.velocity.add(toSteer)).truncate(thisZombie.maxSpeed);

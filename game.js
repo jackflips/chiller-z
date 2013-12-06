@@ -7,6 +7,11 @@ var g = 0;
 
 var MOVEMENT_RATE = 4;
 
+const tileSize = 96;
+const tileOffset = -48;
+const numHumans = 1;
+const numZombies = 1;
+
 function Point(x, y) {
 	return new Vector(x, y);
 }
@@ -391,10 +396,10 @@ $(function() { //jquery loaded
 	game.context = game.canvas.getContext('2d');
 	game.player = new Player();
 	game.player.position = game.center;
-	for (i=0; i<7; i++) {
+	for (i=0; i<numZombies; i++) {
     	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	} 
-	seedHumans();
+	seedHumans(numHumans);
     resources.load([
     	'images/grass.png',
     	'images/dirt.png',

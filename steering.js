@@ -6,6 +6,7 @@
 	const anticipateFactor = 3;
 	const evadeFrameSeek = 10;
 	const evadeSideMagnitude = 100;
+	const obstacleSpaceGiven = 80;
 	
     function followLeader(agent, leader, horde) {
         var force = follow(agent, leader).add(separate(agent, leader, horde));
@@ -119,6 +120,34 @@
 	function avoid_obstacles(agent)
 	{
 		//TODO
+		//check 8 adjacent spaces
+		var position = agent.position;
+		var tile = getTile(position)
+		var force = new Vector(0,0);
+		
+		//console.log("in tile " + tile.x + ", " + tile.y);
+		
+		for(var i=-1; i < 2; i++)
+		{
+			for(var j=-1; j < 2; j++)
+			{
+				if(game.map[tile.x + i][tile.y + j] == 2 || game.map[tile.x + i][tile.y + j] == 3)
+				{
+					//console.log("obstacle at " + i + ", " + j);
+					var moreForce = new Vector(0,0);
+					moreForce.x = Math.max(obstacleSpaceGiven - horizontalDistance(tile, position), 0) * i * -1;
+					moreForce.y = Math.max(obstacleSpaceGiven - verticalDistance(tile, position), 0) * j * -1;
+					force = force.add(moreForce);
+				}
+			}
+		}
+		
+		//magnitude tweaking
+		force = force.divide(obstacleSpaceGiven).multiply(agent.maxSpeed);
+		
+		
+		
+		return force;
 	}
 	
 	function pursue(agent, quarry)
@@ -139,7 +168,7 @@
 			target = quarry.position;
 		}
 		target = target.subtract(agent.position);
-		target.truncate(agent.maxSpeed * 2);
+		target = target.truncate(agent.maxSpeed * 2);
 		return target.divide(2);
 	}
 	
@@ -151,6 +180,7 @@
 		evade: evade,
 		pursue: pursue,
 		runAway: runAway,
-		flee: flee
+		flee: flee,
+		avoid: avoid_obstacles
     }
 })();

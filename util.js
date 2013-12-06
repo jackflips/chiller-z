@@ -34,10 +34,47 @@ function findClosest(closestTo, list)
 
 function getTile(point)
 {
-	
+	var tile = new Vector(0,0);
+	tile.x = Math.floor((point.x - tileOffset + game.canvas.width/2) / tileSize);
+	tile.y = Math.floor((point.y - tileOffset + game.canvas.height/2) / tileSize);
+	return tile;
 }
 
-function getRect(tileX, tileY)
+
+function getRect(tile)
 {
-	
+	var rect = new Object();
+	rect.x1 = tile.x * tileSize;
+	rect.x2 = rect.x1 + tileSize;
+	rect.y1 = tile.y * tileSize;
+	rect.y2 = rect.y1 + tileSize;
+	return rect;
+}
+
+function horizontalDistance(point, tile)
+{
+	var rect = getRect(tile);
+	if(rect.x1 > point.x)
+	{
+		return rect.x1 - point.x;
+	}
+	if(rect.x2 < point.x)
+	{
+		return point.x - rect.x2;
+	}
+	return 0;
+}
+
+function verticalDistance(point, tile)
+{
+	var rect = getRect(tile);
+	if(rect.y1 > point.y)
+	{
+		return rect.y1 - point.y;
+	}
+	if(rect.y2 < point.y)
+	{
+		return point.y - rect.y2;
+	}
+	return 0;
 }
