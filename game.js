@@ -73,7 +73,7 @@ function generateMap() {
 		}
 	}
 	
-	for (s = 0; s < 4000; s++) {
+	for (s = 0; s < 2500; s++) {
 		source = map[0][0];
 		var dirt = new Vector(0, source);
 		dirt.x = Math.floor((Math.random()*400)-200);
@@ -152,9 +152,9 @@ function generateMap() {
 	for (tile in river) {
 		var riverTile = river[tile];
 		if (map[riverTile.x][riverTile.y-1] < 3 && 
-				map[riverTile.x][riverTile.y+1] >= 3 && 
-				map[riverTile.x-1][riverTile.y] < 3 && 
-				map[riverTile.x+1][riverTile.y] >= 3) { //top left corner
+			map[riverTile.x][riverTile.y+1] >= 3 && 
+			map[riverTile.x-1][riverTile.y] < 3 && 
+			map[riverTile.x+1][riverTile.y] >= 3) { //top left corner
 			map[riverTile.x][riverTile.y] = 12;
 		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
 				map[riverTile.x][riverTile.y+1] >= 3 &&
@@ -191,13 +191,13 @@ function generateMap() {
 				map[riverTile.x-1][riverTile.y] >= 3 && 
 				map[riverTile.x+1][riverTile.y] < 3) { //right
 			map[riverTile.x][riverTile.y] = 8;
-		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
-				map[riverTile.x][riverTile.y+1] < 3 &&
+		} else if (map[riverTile.x][riverTile.y-1] >= 3 &&
+				map[riverTile.x][riverTile.y+1] >= 3 &&
 				map[riverTile.x-1][riverTile.y] < 3 && 
 				map[riverTile.x+1][riverTile.y] < 3) { //right and left
-				map[riverTile.x][riverTile.y] = 11;
+			map[riverTile.x][riverTile.y] = 11;
 		} else if (map[riverTile.x][riverTile.y-1] < 3 &&
-				map[riverTile.x][riverTile.y+1] >= 3 &&
+				map[riverTile.x][riverTile.y+1] < 3 &&
 				map[riverTile.x-1][riverTile.y] >= 3 && 
 				map[riverTile.x+1][riverTile.y] >= 3) { //top and bottom
 			map[riverTile.x][riverTile.y] = 6;
@@ -225,8 +225,8 @@ function generateMap() {
 			map[riverTile.x][riverTile.y] = 5;
 		}
 		if (riverTile.subtract(lastTile).equals(directions.down) &&
-			map[riverTile.x-1][riverTile.y] > 3 &&
-			map[riverTile.x+1][riverTile.y] > 3) {
+			map[riverTile.x-1][riverTile.y] < 3 &&
+			map[riverTile.x+1][riverTile.y] < 3) {
 			if (bridgeCounter % 8 == 0) {
 				map[riverTile.x][riverTile.y] = 4;
 			}
@@ -350,7 +350,7 @@ function requestMove(position, velocity) {
 	var newPos = position.add(velocity);
 	var newPosTile = newPos.divide(96);
 	//console.log(map[Math.round(newPosTile.x)][Math.round(newPosTile.y)]);
-	if (map[Math.round(newPosTile.x)][Math.round(newPosTile.y)] =! 2) {
+	if (map[Math.round(newPosTile.x)][Math.round(newPosTile.y)] !== 2) {
 		return newPos;
 	} else {
 		var allowedMovementX = function() {
@@ -381,9 +381,9 @@ function draw() {
 		} else {
 			var triangleFactor = euclideanDistance(game.targetOffset) / MOVEMENT_RATE;
 			game.player.velocity = game.targetOffset.divide(triangleFactor);
-			var move = requestMove(game.center, game.player.velocity);
+			//var move = requestMove(game.center, game.player.velocity);
 			//console.log(move);
-			game.center = game.center.add(move);
+			game.center = game.center.add(game.player.velocity);
 			game.player.position.x = game.center.x - 37.5;
 			game.player.position.y = game.center.y - 37.5;
 		}
@@ -528,6 +528,7 @@ $(function() { //jquery loaded
 		'images/riverRight.png',
 		'images/riverBottom.png',
 		'images/riverRightAndLeft.png',
+		'images/riverCornerUL.png',
 		'images/riverCornerUR.png',
 		'images/riverCornerDL.png',
 		'images/riverCornerDR.png',
