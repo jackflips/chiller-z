@@ -348,7 +348,8 @@ Sprite.prototype._staticRender = function(ctx) {
                   0, 0,
                   this.size[0], this.size[1],
                   x, y,
-                  this.size[0] / (this.shouldZoom ? game.zoomLevel : 1), this.size[1] / (this.shouldZoom ? game.zoomLevel : 1));
+                  Math.ceil(this.size[0] / (this.shouldZoom ? game.zoomLevel : 1)),
+				  Math.ceil(this.size[1] / (this.shouldZoom ? game.zoomLevel : 1)));
 }
 
 function requestMove(position, velocity) {
