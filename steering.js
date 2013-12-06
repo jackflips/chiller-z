@@ -7,6 +7,7 @@
 	const evadeFrameSeek = 10;
 	const evadeSideMagnitude = 100;
 	const obstacleSpaceGiven = 60;
+	const cornerForceDecrease = 3;
 	
     function followLeader(agent, leader, horde) {
         var force = follow(agent, leader).add(separate(agent, leader, horde));
@@ -137,6 +138,10 @@
 					console.log("distances: " + horizontalDistance(position, tile) + ", " + verticalDistance(position, tile));
 					moreForce.x = Math.max(obstacleSpaceGiven - horizontalDistance(position, tile), 0) * i * -1;
 					moreForce.y = Math.max(obstacleSpaceGiven - verticalDistance(position, tile), 0) * j * -1;
+					if(moreForce.length() > obstacleSpaceGiven)
+					{
+						moreForce.truncate(obstacleSpaceGiven / cornerForceDecrease);
+					}
 					console.log("force added: " + moreForce.x + ", " + moreForce.y);
 					force = force.add(moreForce);
 				}
@@ -146,8 +151,8 @@
 		//console.log("force = " + force.x + ", " + force.y);
 		
 		//magnitude tweaking
-		//force = force.divide(obstacleSpaceGiven).multiply(agent.maxSpeed);
-		
+		force = force.divide(obstacleSpaceGiven).multiply(agent.maxSpeed * 2);
+		force.truncate(agent.maxSpeed * 1.5);
 		return force;
 	}
 	
