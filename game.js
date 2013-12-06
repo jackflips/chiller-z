@@ -9,8 +9,8 @@ var MOVEMENT_RATE = 4;
 
 const tileSize = 96;
 const tileOffset = -48;
-const numHumans = 1;
-const numZombies = 1;
+const numHumans = 150;
+const numZombies = 8;
 
 function Point(x, y) {
 	return new Vector(x, y);
@@ -352,14 +352,20 @@ Sprite.prototype._staticRender = function(ctx) {
 }
 
 function requestMove(position, velocity) {
-	/*
 	function inWaterTile(position) {
 		var tile = getTile(position)
 		if (game.map[tile.x][tile.y] > 4) {
+			console.log("true");
 			return true;
 		}
 		return false;
 	}
+	if (!inWaterTile(position.add(velocity))) {
+		return velocity;
+	} else {
+		return 0;
+	}
+	/*
 	var velocityLength = velocity.length();
 	var testPosition = position;
 	for (i=0; i<velocityLength; i++) {
@@ -368,9 +374,8 @@ function requestMove(position, velocity) {
 		testPosition.y += velocity.unit().y;
 		if (inWaterTile(testPosition)) testPosition = position;
 	}
-	return testPosition.subtract(position);
 	*/
-	return velocity;
+	//return testPosition.subtract(position);
 }
 
 function drawVelocityVectors(position, velocity, idealVelocity) {
@@ -384,13 +389,12 @@ function drawVelocityVectors(position, velocity, idealVelocity) {
     game.context.strokeStyle = "#000080";
     game.context.stroke();
     game.context.beginPath();
-    /*
     game.context.moveTo(newPos.x, newPos.y);
-    game.context.lineTo(newPos.x + idealVelocity.x, newPos.y + idealVelocity.y);
+    var scaledIdealVelocity = newPos.add(idealVelocity.multiply(50));
+    game.context.lineTo(scaledIdealVelocity.x, scaledIdealVelocity.y);
     game.context.lineWidth = 3;
     game.context.strokeStyle = "#ffd700";
     game.context.stroke();
-    */
 }
 
 //both draws and updates
@@ -437,7 +441,7 @@ function draw() {
 		thisHuman.position.y += thisHuman.velocity.y;
 	}
 
-	//game.zoomLevel = 1 + (.02 * game.zombies.length);
+	game.zoomLevel = 1 + (.05 * game.zombies.length);
 
 	//now draw
 	//--------

@@ -133,16 +133,13 @@
 			{
 				if(game.map[tile.x + i][tile.y + j] == 2 || game.map[tile.x + i][tile.y + j] > 4)
 				{
-					console.log("obstacle at " + i + ", " + j);
 					var moreForce = new Vector(0,0);
-					console.log("distances: " + horizontalDistance(position, tile) + ", " + verticalDistance(position, tile));
 					moreForce.x = Math.max(obstacleSpaceGiven - horizontalDistance(position, tile), 0) * i * -1;
 					moreForce.y = Math.max(obstacleSpaceGiven - verticalDistance(position, tile), 0) * j * -1;
 					if(moreForce.length() > obstacleSpaceGiven)
 					{
 						moreForce.truncate(obstacleSpaceGiven / cornerForceDecrease);
 					}
-					console.log("force added: " + moreForce.x + ", " + moreForce.y);
 					force = force.add(moreForce);
 				}
 			}

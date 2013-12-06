@@ -7,7 +7,7 @@ function Human (position, velocity) {
 	this.position = position;
 	this.velocity = velocity;
 	this.size = 65;
-	this.counter = 500;
+	this.counter = 250;
 	this.status = 'live';
 	
 	var thisHuman = this;
@@ -67,7 +67,7 @@ function Human (position, velocity) {
 		var toSteer = steering.wander(thisHuman);
 		toSteer = toSteer.truncate(thisHuman.maxSpeed);
 		toSteer = toSteer.divide(humanInertia);
-		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(thisHuman.maxSpeed);
+		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(0.1);
 		thisHuman.counter--;
 	}
 	var deathAction = function() {
