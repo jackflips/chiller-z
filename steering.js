@@ -7,7 +7,7 @@
 	const evadeFrameSeek = 10;
 	const evadeSideMagnitude = 100;
 	const obstacleSpaceGiven = 80;
-	const offDistanceThreshold = 20;
+	const offDistanceThreshold = 40;
 	const cornerForceDecrease = 3;
 	
     function followLeader(agent, leader, horde) {
@@ -132,7 +132,7 @@
 		{
 			for(var j=-1; j < 2; j++)
 			{
-				var check = new Vector(tile.x+1, tile.y+j);
+				var check = new Vector(tile.x + i, tile.y + j);
 				if(isImpassible(check))
 				{
 					//console.log("obstacle at " + i + ", " + j);
@@ -169,8 +169,8 @@
 		//console.log("force = " + force.x + ", " + force.y);
 		
 		//magnitude tweaking
-		force = force.divide(obstacleSpaceGiven).multiply(agent.maxSpeed * 7);
-		force.truncate(agent.maxSpeed * 1.5);
+		force = force.divide(obstacleSpaceGiven).multiply(agent.maxSpeed * 5);
+		force.truncate(agent.maxSpeed * 2);
 		return force;
 	}
 	

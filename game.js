@@ -8,8 +8,8 @@ var velocityVectorsQueue = [];
 var MOVEMENT_RATE = 4;
 
 const tileSize = 96;
-const tileOffset = -48;
-const numHumans = 1;
+//const tileOffset = -48;
+const numHumans = 100;
 const numZombies = 1;
 
 function Point(x, y) {
@@ -352,15 +352,11 @@ Sprite.prototype._staticRender = function(ctx) {
 }
 
 function requestMove(position, velocity) {
-	function inWaterTile(position) {
-		var tile = getTile(position)
-		if (game.map[tile.x][tile.y] > 4) {
-			console.log("true");
-			return true;
-		}
-		return false;
+	function inImpassibleTile(position) {
+		var tile = getTile(position);
+		return isImpassible(tile);
 	}
-	if (!inWaterTile(position.add(velocity))) {
+	if (!inImpassibleTile(position.add(velocity))) {
 		return velocity;
 	} else {
 		return 0;
@@ -449,12 +445,18 @@ function draw() {
 	//draw world
 	sprites.length = 0;
 	var tileWidth = 96 / game.zoomLevel;
-	var firstRowToDraw = Math.floor(game.center.x / 96);
-	var firstColToDraw = Math.floor(game.center.y / 96);
+	var firstRowToDraw = Math.floor((game.center.x) / tileWidth);
+	var firstColToDraw = Math.floor((game.center.y) / tileWidth);
 
-	for (i=firstRowToDraw; i<firstRowToDraw + Math.ceil(game.canvas.width / tileWidth) + 1; i++) {
-		for (j=firstColToDraw; j<firstColToDraw + Math.ceil(game.canvas.height / tileWidth) + 1; j++) {
-			sprites.push(new Sprite(game.map[i][j], [(i*96 - game.center.x) / game.zoomLevel, (j*96 - game.center.y) / game.zoomLevel], [96, 96], false, false, true));
+	for (i=firstRowToDraw; i<firstRowToDraw + Math.ceil((game.canvas.width / tileWidth) * game.zoomLevel) + 1; i++) {
+		for (j=firstColToDraw; j<firstColToDraw + Math.ceil(game.canvas.height / tileWidth * game.zoomLevel) + 1; j++) {
+			sprites.push( new Sprite(game.map[i][j],
+				[	(i*96 - game.center.x + (((game.zoomLevel - 1) * game.canvas.width) / 2)) / game.zoomLevel,
+					(j*96 - game.center.y + (((game.zoomLevel - 1) * game.canvas.height) / 2)) / game.zoomLevel],
+				[96, 96],
+				false,
+				false,
+				true));
 		}
 	}
 

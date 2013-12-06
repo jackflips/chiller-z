@@ -50,14 +50,14 @@ function Human (position, velocity) {
 
 	// Actions
 	var wanderAction = function() {
-		var toSteer = steering.wander(thisHuman).add(steering.separate(thisHuman, game.player, game.humans));
+		var toSteer = steering.wander(thisHuman).add(steering.separate(thisHuman, game.player, game.humans).truncate(thisHuman.maxSpeed)).add(steering.avoid(thisHuman));
 		toSteer = toSteer.truncate(thisHuman.maxSpeed);
 		toSteer = toSteer.divide(humanInertia);
 		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(thisHuman.maxSpeed);
 	}
 	var runAction = function() {
 		var quarry = findClosest(thisHuman, game.zombies);
-		var toSteer = steering.runAway(thisHuman, game.zombies).add(steering.separate(thisHuman, game.player, game.humans));
+		var toSteer = steering.runAway(thisHuman, game.zombies).add(steering.separate(thisHuman, game.player, game.humans).truncate(thisHuman.maxSpeed)).add(steering.avoid(thisHuman));
 		toSteer = toSteer.truncate(thisHuman.maxSpeed);
 		toSteer = toSteer.divide(humanInertia);
 		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(thisHuman.maxSpeed);
