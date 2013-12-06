@@ -63,13 +63,20 @@ function Zombie(position, velocity) {
 		var toSteer = steering.followLeader(thisZombie, game.player, game.zombies);
 		toSteer = toSteer.divide(zombieInertia);
 		thisZombie.velocity = thisZombie.velocity.add(toSteer).truncate(thisZombie.maxSpeed);
+		if (debugToggle) {
+			velocityVectorsQueue.push([thisZombie.position, thisZombie.velocity, toSteer]);
+		}
 	};
+
 	var wander = function()
 	{
 		var toSteer = steering.wander(thisZombie).add(steering.separate(thisZombie, game.player, game.zombies));
 		toSteer = toSteer.truncate(thisZombie.maxSpeed);
 		toSteer = toSteer.divide(zombieInertia);
 		thisZombie.velocity = (thisZombie.velocity.add(toSteer)).truncate(thisZombie.maxSpeed);
+		if (debugToggle) {
+			velocityVectorsQueue.push([thisZombie.position, thisZombie.velocity, toSteer]);
+		}
 	};
 	var chase = function()
 	{
@@ -85,6 +92,9 @@ function Zombie(position, velocity) {
 			thisZombie.hunger = thisZombie.hunger - feedAmountPerFrame;
 			if(thisZombie.hunger < 0)
 				thisZombie.hunger = 0;
+		}
+		if (debugToggle) {
+			velocityVectorsQueue.push([thisZombie.position, thisZombie.velocity, toSteer]);
 		}
 	};
 	

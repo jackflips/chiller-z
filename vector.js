@@ -37,6 +37,12 @@ Vector.prototype = {
       this.x * v.y - this.y * v.x
     );
   },
+  map: function(fn) {
+    this.x = fn(this.x);
+    this.y = fn(this.y);
+    this.z = fn(this.z);
+    return this;
+  },
   length: function() {
     return Math.sqrt(this.dot(this));
   },

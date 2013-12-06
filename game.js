@@ -2,8 +2,8 @@
 var game;
 var sprites = [];
 var debugCounter = 0;
-
-var g = 0;
+var debugToggle = false;
+var velocityVectorsQueue = [];
 
 var MOVEMENT_RATE = 4;
 
@@ -130,19 +130,19 @@ function generateMap() {
 		chance = Math.random();
 		if (chance < .4 && last != directions.up) {
 			index = index.add(directions.down);
-			map[index.x][index.y] = 2;
+			map[index.x][index.y] = 5;
 			last = directions.down;
 		} else if (chance < .6 && last != directions.right) {
 			index = index.add(directions.left);
-			map[index.x][index.y] = 2;
+			map[index.x][index.y] = 5;
 			last = directions.left;
 		} else if (chance < .8 && last != directions.left) {
 			index = index.add(directions.right);
-			map[index.x][index.y] = 2;
+			map[index.x][index.y] = 5;
 			last = directions.right;
 		} else if (last != directions.down) {
 			index = index.add(directions.up);
-			map[index.x][index.y] = 2;
+			map[index.x][index.y] = 5;
 			last = directions.up;
 		}
 		river.push(index);
@@ -152,8 +152,8 @@ function generateMap() {
 	for (tile in river) {
 		var riverTile = river[tile];
 		if (riverTile.subtract(lastTile).equals(directions.down) &&
-			map[riverTile.x-1][riverTile.y] != 2 &&
-			map[riverTile.x+1][riverTile.y] != 2) {
+			map[riverTile.x-1][riverTile.y] != 5 &&
+			map[riverTile.x+1][riverTile.y] != 5) {
 			if (bridgeCounter % 8 == 0) {
 				map[riverTile.x][riverTile.y] = 4;
 			}
@@ -180,7 +180,7 @@ function Sprite(image, pos, size, rotation, isCharacter, shouldZoom) {
 	else if (image == 1) {
 		this.image = "images/dirt.png";
 	}
-	else if (image == 2) {
+	else if (image == 5) {
 		this.image = "images/ocean.png";
 	}
 	else if (image == 3) {
@@ -229,26 +229,45 @@ Sprite.prototype._staticRender = function(ctx) {
 }
 
 function requestMove(position, velocity) {
-	var newPos = position.add(velocity);
-	var newPosTile = newPos.divide(96);
-	//console.log(map[Math.round(newPosTile.x)][Math.round(newPosTile.y)]);
-	if (map[Math.round(newPosTile.x)][Math.round(newPosTile.y)] !== 2) {
-		return newPos;
-	} else {
-		var allowedMovementX = function() {
-			for (i=newPos.x; i<=newPos.x + velocity.x; i++) {
-				if (i % 96 == 0) return i-newPos.x;
-			}
-			return velocity.x;
-		}();
-		var allowedMovementY = function() {
-			for (i=newPos.y; i<=newPos.y + velocity.y; i++) {
-				if (i % 96 == 0) return i-newPos.y;
-			}
-			return velocity.y;
-		}();
-		return new Vector(allowedMovementX, allowedMovementY);
+	/*
+	function inWaterTile(position) {
+		var tile = getTile(position)
+		if (game.map[tile.x][tile.y] > 4) {
+			return true;
+		}
+		return false;
 	}
+	var velocityLength = velocity.length();
+	var testPosition = position;
+	for (i=0; i<velocityLength; i++) {
+		testPosition.x += velocity.unit().x;
+		if (inWaterTile(testPosition)) testPosition = position;
+		testPosition.y += velocity.unit().y;
+		if (inWaterTile(testPosition)) testPosition = position;
+	}
+	return testPosition.subtract(position);
+	*/
+	return velocity;
+}
+
+function drawVelocityVectors(position, velocity, idealVelocity) {
+	//newPos = position.add(new Vector(game.canvas.width/2, game.canvas.height/2)).subtract(game.center).divide(game.zoomLevel);
+	var newPos = position.subtract(game.center).divide(game.zoomLevel).add(new Vector(game.canvas.width/2, game.canvas.height/2));
+	game.context.beginPath();
+    game.context.moveTo(newPos.x, newPos.y);
+    var scaledVelocity = newPos.add(velocity.multiply(15));
+    game.context.lineTo(scaledVelocity.x, scaledVelocity.y);
+    game.context.lineWidth = 3;
+    game.context.strokeStyle = "#000080";
+    game.context.stroke();
+    game.context.beginPath();
+    /*
+    game.context.moveTo(newPos.x, newPos.y);
+    game.context.lineTo(newPos.x + idealVelocity.x, newPos.y + idealVelocity.y);
+    game.context.lineWidth = 3;
+    game.context.strokeStyle = "#ffd700";
+    game.context.stroke();
+    */
 }
 
 //both draws and updates
@@ -263,9 +282,8 @@ function draw() {
 		} else {
 			var triangleFactor = euclideanDistance(game.targetOffset) / MOVEMENT_RATE;
 			game.player.velocity = game.targetOffset.divide(triangleFactor);
-			//var move = requestMove(game.center, game.player.velocity);
-			//console.log(move);
-			game.center = game.center.add(game.player.velocity);
+			var move = requestMove(game.center, game.player.velocity);
+			game.center = game.center.add(move);
 			game.player.position.x = game.center.x - 37.5;
 			game.player.position.y = game.center.y - 37.5;
 		}
@@ -297,7 +315,6 @@ function draw() {
 	}
 
 	//game.zoomLevel = 1 + (.02 * game.zombies.length);
-	game.zoomLevel = 1;
 
 	//now draw
 	//--------
@@ -349,6 +366,14 @@ function draw() {
 	//	game.zombies[zombie].drawVelocityVectors();
 	//}
 
+	if (debugToggle) {
+		for (thing in velocityVectorsQueue) {
+			var theThing = velocityVectorsQueue[thing];
+			drawVelocityVectors(theThing[0], theThing[1], theThing[2]);
+		}
+		velocityVectorsQueue.length = 0;
+	}
+
 	debugCounter++;
 }
 
@@ -377,6 +402,11 @@ function bindKeys() {
     		var mouseOffset = new Point(e.clientX - offset.left, e.clientY - offset.top);
     		game.targetOffset = mouseOffset.subtract(new Point(canvas.width/2, canvas.height/2));
     		game.currentTarget = game.center.add(game.targetOffset);
+		}
+	});
+	$(window).keypress(function(e) {
+		if (e.keyCode == 100) {
+			debugToggle = !debugToggle;
 		}
 	});
 }
