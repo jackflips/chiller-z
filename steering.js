@@ -143,12 +143,14 @@
 					if(horizontalDistance(position, check) < offDistanceThreshold)
 						moreForce.y = Math.max(obstacleSpaceGiven - verticalDistance(position, check), 0) * j * -1;
 					
+
 					/*
 					if(moreForce.length() > obstacleSpaceGiven)
 					{
 						moreForce.truncate(obstacleSpaceGiven / cornerForceDecrease);
 					}
 					//*/
+					
 					//console.log("force added: " + moreForce.x + ", " + moreForce.y);
 					if(moreForce.length() == 0)
 					{
@@ -158,7 +160,7 @@
 							console.log("In impassible tile!");
 						}
 					}
-					
+
 					force = force.add(moreForce);
 				}
 			}

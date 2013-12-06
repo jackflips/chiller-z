@@ -67,7 +67,7 @@ function Human (position, velocity) {
 		var toSteer = steering.wander(thisHuman);
 		toSteer = toSteer.truncate(thisHuman.maxSpeed);
 		toSteer = toSteer.divide(humanInertia);
-		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(thisHuman.maxSpeed);
+		thisHuman.velocity = (thisHuman.velocity.add(toSteer)).truncate(0.1);
 		thisHuman.counter--;
 	}
 	var deathAction = function() {
