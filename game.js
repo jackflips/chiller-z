@@ -58,10 +58,10 @@ function generateMap() {
 		for (j=-200; j<200; j++) {
 			if ((i < -195 || i > 190) || (j < -195 || j > 190)) {
 				//outer border is mountains
-				map[i][j] = 3;
+				map[i][j] = 2;
 			} else if ((i < -192 || i > 187) || (j < -192 || j > 187)) {
 				if (Math.random() < 0.4) {
-					map[i][j] = 3;
+					map[i][j] = 2;
 				} else if (Math.random() > 0.5) {
 					map[i][j] = 0;
 				} else {
@@ -130,19 +130,19 @@ function generateMap() {
 		chance = Math.random();
 		if (chance < .4 && last != directions.up) {
 			index = index.add(directions.down);
-			map[index.x][index.y] = 2;
+			map[index.x][index.y] = 5;
 			last = directions.down;
 		} else if (chance < .6 && last != directions.right) {
 			index = index.add(directions.left);
-			map[index.x][index.y] = 2;
+			map[index.x][index.y] = 5;
 			last = directions.left;
 		} else if (chance < .8 && last != directions.left) {
 			index = index.add(directions.right);
-			map[index.x][index.y] = 2;
+			map[index.x][index.y] = 5;
 			last = directions.right;
 		} else if (last != directions.down) {
 			index = index.add(directions.up);
-			map[index.x][index.y] = 2;
+			map[index.x][index.y] = 5;
 			last = directions.up;
 		}
 		river.push(index);
@@ -151,9 +151,36 @@ function generateMap() {
 	var lastTile = new Vector(1000, 1000); //arbitrary out of scope
 	for (tile in river) {
 		var riverTile = river[tile];
+		var up = map[riveTile.x][riverTile.y-1];
+		var down = map[riveTile.x][riverTile.y+1];
+		var left = map[riveTile.x-1][riverTile.y];
+		var right = map[riveTile.x+1][riverTile.y];
+		if (up < 3 && down >= 3 && left < 3 && right >= 3) { //top left corner tile
+			this.image = "images/riverCornerUL.png";
+		} else if (up < 3 && down >= 3 && left >= 3 && right < 3) { //top right corner
+			this.image = "images/riverCornerUR.png";
+		} else if (up >= 3 && down < 3 && left < 3 && right >= 3) { //bottom left corner
+			this.image = "images/riverCornerDL.png";
+		} else if (up >= 3 && down < 3 && left >= 3 && right < 3) { //bottom right corner
+			this.image = "images/riverCornerDR.png";
+		} else if (up < 3 && down >= 3 && left >= 3 && right >= 3) { //top is not water
+			this.image = "images/riverTop.png";
+		} else if (up >= 3 && down < 3 && left >= 3 && right >= 3) { //bottom
+			this.image = "images/riverBottom.png";
+		} else if (up >= 3 && down >= 3 && left < 3 && right >= 3) { //left
+			this.image = "images/riverLeft.png";
+		} else if (up >= 3 && down >= 3 && left >= 3 && right < 3) { //right
+			this.image = "images/riverRight.png";
+		} else if (up < 3 && down < 3 && left < 3 && right < 3) { //right and left
+			this.image = "images/riverRightAndLeft.png";
+		} else if (up < 3 && down >= 3 && left >= 3 && right >= 3) { //top and bottom
+			this.image = "images/riverTopAndBottom.png";
+		} else { //middle of river
+			this.image = "images/riverMid.png";
+		}
 		if (riverTile.subtract(lastTile).equals(directions.down) &&
-			map[riverTile.x-1][riverTile.y] != 2 &&
-			map[riverTile.x+1][riverTile.y] != 2) {
+			map[riverTile.x-1][riverTile.y] > 3 &&
+			map[riverTile.x+1][riverTile.y] > 3) {
 			if (bridgeCounter % 8 == 0) {
 				map[riverTile.x][riverTile.y] = 4;
 			}
@@ -181,13 +208,49 @@ function Sprite(image, pos, size, rotation, isCharacter, shouldZoom) {
 		this.image = "images/dirt.png";
 	}
 	else if (image == 2) {
-		this.image = "images/ocean.png";
+		this.image = "images/rock.jpg";
 	}
 	else if (image == 3) {
-		this.image = "images/rock.jpg";
+		this.image = "images/ocean.png";
 	}
 	else if (image == 4) {
 		this.image = "images/bridge.png";
+	}
+	else if (image == 5) {
+		this.image = "images/riverMid.png";
+	}
+	else if (image == 6) {
+		this.image = "images/riverEnd.png";
+	}
+	else if (image == 7) {
+		this.image = "images/riverLeft.png";
+	}
+	else if (image == 8) {
+		this.image = "images/riverRight.png";
+	}
+	else if (image == 9) {
+		this.image = "images/riverTop.png";
+	}
+	else if (image == 10) {
+		this.image = "images/riverBottom.png";
+	}
+	else if (image == 11) {
+		this.image = "images/riverRightAndLeft.png";
+	}
+	else if (image == 12) {
+		this.image = "images/riverCornerUL.png";
+	}
+	else if (image == 13) {
+		this.image = "images/riverCornerUR.png";
+	}
+	else if (image == 14) {
+		this.image = "images/riverCornerDL.png";
+	}
+	else if (image == 15) {
+		this.image = "images/riverCornerDR.png";
+	}
+	else if (image == 16) {
+		this.image = "images/riverTopAndBottom.png";
 	}
 	else {
 		this.image = image;
@@ -404,7 +467,18 @@ $(function() { //jquery loaded
 		'images/necromancer.png',
 		'images/human.png',
 		'images/ocean.png',
-		'images/bridge.png'
+		'images/bridge.png',
+		'images/riverTop.png',
+		'images/riverLeft.png',
+		'images/riverRight.png',
+		'images/riverBottom.png',
+		'images/riverRightAndLeft.png',
+		'images/riverCornerUR.png',
+		'images/riverCornerDL.png',
+		'images/riverCornerDR.png',
+		'images/riverEnd.png',
+		'images/riverMid.png',
+		'images/riverTopAndBottom.png'
    	]);
     resources.onReady(animate);
     bindKeys();
