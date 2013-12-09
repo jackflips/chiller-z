@@ -4,6 +4,7 @@ const humanInertia = 50;
 const humanSize = 11;
 
 var hh_coll = 0;
+var escapedHumans = 0;
 
 function Human (position, velocity) {
 	this.maxSpeed = 2;
@@ -76,7 +77,10 @@ function Human (position, velocity) {
 	var deathAction = function() {
 		game.zombies.push(new Zombie(thisHuman.position, new Vector(Math.sqrt(2), Math.sqrt(2))));
 		thisHuman.status = 'dead';
-	}	
+	}
+	var escapeAction = function(){
+		escapedHumans++;
+	}
 	var nullAction = function() {}
 
 	// States
@@ -108,7 +112,7 @@ function Human (position, velocity) {
 	
 	var farTrans = new Transition();
 	farTrans.setTargetState(wanderState);
-	farTrans.setAction(nullAction);
+	farTrans.setAction(escapeAction);
 	farTrans.setCondition(farFromZombie);
 	
 	var caughtTrans = new Transition();
