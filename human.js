@@ -1,6 +1,9 @@
 const feedingRange = 400;
 const caughtDist = 70;
 const humanInertia = 50;
+const humanSize = 11;
+
+var hh_coll = 0;
 
 function Human (position, velocity) {
 	this.maxSpeed = 2;
@@ -144,4 +147,25 @@ function Human (position, velocity) {
 Human.prototype.update = function(game){
 	var actions = this.humanFSM.update();
 	for (var act in actions) {actions[act]();}
+
+	//check hh-collisions
+	var collided = false;
+	for(human in game.humans)
+	{
+		var collhuman = game.humans[human];
+		if(collhuman != this)
+		{
+			if(euclideanDistance(collhuman.position, this.position) < humanSize * 2)
+			{
+				collided = true;
+				if(!collhuman.colliding)
+				{
+					hh_coll++;
+					console.log("HH-collision!");
+					collhuman.colliding = true;
+				}
+			}
+		}
+	}
+	colliding = collided;
 }

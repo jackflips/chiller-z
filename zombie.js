@@ -7,6 +7,9 @@ const humanProximityStartChase = 500;
 const humanProximityEndChase = 700;
 const feedAmountPerFrame = 20;
 //caughtDist is in human.js
+const zombieSize = 11;
+
+var zz_coll = 0;
 
 function Zombie(position, velocity) {
 	this.hunger = Math.floor(Math.random() * 100);
@@ -15,6 +18,7 @@ function Zombie(position, velocity) {
 	this.position = position;
 	this.velocity = velocity;
 	this.size = 65;
+	this.colliding = false;
 	
 	var thisZombie = this;
 	
@@ -179,6 +183,27 @@ Zombie.prototype.update = function(game) {
 	{
 		game.zombies.splice(game.zombies.indexOf(this), 1);
 	}
+	
+	//check zz-collisions
+	var collided = false;
+	for(zombie in game.zombies)
+	{
+		var collZombie = game.zombies[zombie];
+		if(collZombie != this)
+		{
+			if(euclideanDistance(collZombie.position, this.position) < zombieSize * 2)
+			{
+				collided = true;
+				if(!collZombie.colliding)
+				{
+					zz_coll++;
+					console.log("ZZ-collision!");
+					collZombie.colliding = true;
+				}
+			}
+		}
+	}
+	colliding = collided;
 };
 
 Zombie.prototype.drawVelocityVectors = function(){

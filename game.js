@@ -9,8 +9,8 @@ var MOVEMENT_RATE = 4;
 
 const tileSize = 96;
 //const tileOffset = -48;
-const numHumans = 100;
-const numZombies = 1;
+const numHumans = 1;
+const numZombies = 30;
 
 function Point(x, y) {
 	return new Vector(x, y);
@@ -555,7 +555,7 @@ $(function() { //jquery loaded
 	game.player = new Player();
 	game.player.position = game.center;
 	for (i=0; i<numZombies; i++) {
-    	game.zombies.push(new Zombie(new Point(i*20, i*10), new Vector(Math.sqrt(2), Math.sqrt(2))));
+    	game.zombies.push(new Zombie(new Point(i*50, i*20), new Vector(Math.sqrt(2), Math.sqrt(2))));
 	} 
 	seedHumans();
     resources.load([
