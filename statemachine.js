@@ -2,6 +2,8 @@
 // referenced implementation from textbook
 // State, Transition, Finite State Machine
 
+const rapidStateThreshold = 10;
+
 function State(action, entryAction, exitAction) {
 	this.setAction = function(action) {this.action = action;};
 	this.getAction = function() {return this.action;};
@@ -32,7 +34,11 @@ function Condition() {
 }
 
 function StateMachine() {	
+	this.lastTransitionTime = 70;
+	this.rapidTransitionCombo = 0;
+	
 	this.update = function() {
+		this.lastTransitionTime++;
 		this.actions = new Array();
 		this.transition = null;
 		this.targetState;
@@ -46,6 +52,19 @@ function StateMachine() {
 		}
 		
 		if (this.transition != null) {
+			if(this.lastTransitionTime < rapidStateThreshold)
+			{
+				this.rapidTransitionCombo++;
+				console.log("Rapid state change!");
+				if(this.rapidTransitionCombo > 1)
+					console.log("x" + this.rapidTransitionCombo + " combo!!!");
+			}
+			else
+			{
+				this.rapidTransitionCombo = 0;
+			}
+			this.lastTransitionTime = 0;
+			
 			this.targetState = this.transition.getTargetState();
 			if (this.currentState.getExitAction() != null) this.actions.push(this.currentState.getExitAction());
 			if (this.transition.getAction() != null) this.actions.push(this.transition.getAction());
